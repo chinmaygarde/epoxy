@@ -21,6 +21,10 @@ class Argument {
 
   ~Argument();
 
+  Primitive GetPrimitive() const;
+
+  const std::string& GetIdentifier() const;
+
  private:
   Primitive primitive_;
   std::string identifier_;
@@ -35,6 +39,12 @@ class Function {
            Primitive return_type);
 
   ~Function();
+
+  const std::string& GetName() const;
+
+  const std::vector<Argument>& GetArguments() const;
+
+  Primitive GetReturnType() const;
 
  private:
   std::string name_;
@@ -55,8 +65,11 @@ class Namespace {
 
   const std::string& GetName() const;
 
+  const std::vector<Function>& GetFunctions() const;
+
  private:
   std::string name_;
+  std::vector<Function> functions_;
 };
 
 }  // namespace epoxy

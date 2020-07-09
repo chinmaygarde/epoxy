@@ -9,6 +9,14 @@ Argument::Argument(Primitive primitive, std::string identifier)
 
 Argument::~Argument() = default;
 
+Primitive Argument::GetPrimitive() const {
+  return primitive_;
+}
+
+const std::string& Argument::GetIdentifier() const {
+  return identifier_;
+}
+
 Function::Function() = default;
 
 Function::Function(std::string name,
@@ -20,15 +28,37 @@ Function::Function(std::string name,
 
 Function::~Function() = default;
 
+const std::string& Function::GetName() const {
+  return name_;
+}
+
+const std::vector<Argument>& Function::GetArguments() const {
+  return arguments_;
+}
+
+Primitive Function::GetReturnType() const {
+  return return_type_;
+}
+
 Namespace::Namespace() = default;
 
 Namespace::Namespace(std::string name, NamespaceItems items)
-    : name_(std::move(name)) {}
+    : name_(std::move(name)) {
+  for (const auto& item : items) {
+    if (auto function = std::get_if<Function>(&item)) {
+      functions_.push_back(*function);
+    }
+  }
+}
 
 Namespace::~Namespace() = default;
 
 const std::string& Namespace::GetName() const {
   return name_;
+}
+
+const std::vector<Function>& Namespace::GetFunctions() const {
+  return functions_;
 }
 
 }  // namespace epoxy

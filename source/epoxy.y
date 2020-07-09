@@ -67,8 +67,6 @@
 %type <epoxy::Argument> Argument
 %type <std::vector<epoxy::Argument>> ArgumentList
 %type <epoxy::Primitive> Primitive
-// %type <epoxy::Struct> Struct
-// %type <epoxy::Class> Class
 
 %start SourceFile
 
@@ -85,8 +83,8 @@ Namespace
   ;
 
 NamespaceItems
-  : NamespaceItem                  { $$.emplace_back(std::move($1)); }
-  | NamespaceItems NamespaceItem
+  : NamespaceItem                  { $$ = {$1}; }
+  | NamespaceItems NamespaceItem   { $$ = $1; $$.push_back($2); }
   ;
 
 NamespaceItem
@@ -95,11 +93,12 @@ NamespaceItem
 
 Function
   : FUNCTION IDENTIFIER PAREN_LEFT ArgumentList PAREN_RIGHT ARROW Primitive { $$ = epoxy::Function{$2, $4, $7}; }
+  | FUNCTION IDENTIFIER PAREN_LEFT              PAREN_RIGHT ARROW Primitive { $$ = epoxy::Function{$2, {}, $6}; }
   ;
 
 ArgumentList
-  : Argument                        { $$.emplace_back(std::move($1)); }
-  | ArgumentList COMMA Argument
+  : Argument                        { $$ = {$1}; }
+  | ArgumentList COMMA Argument     { $$ = $1; $$.push_back($3); }
   ;
 
 Argument
