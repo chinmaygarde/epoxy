@@ -48,6 +48,10 @@ Namespace::Namespace(std::string name, NamespaceItems items)
     if (auto function = std::get_if<Function>(&item)) {
       functions_.push_back(*function);
     }
+
+    if (auto struct_item = std::get_if<Struct>(&item)) {
+      structs_.push_back(*struct_item);
+    }
   }
 }
 
@@ -59,6 +63,25 @@ const std::string& Namespace::GetName() const {
 
 const std::vector<Function>& Namespace::GetFunctions() const {
   return functions_;
+}
+
+const std::vector<Struct>& Namespace::GetStructs() const {
+  return structs_;
+}
+
+Struct::Struct() = default;
+
+Struct::Struct(std::string name, std::vector<Argument> variables)
+    : name_(std::move(name)), variables_(std::move(variables)) {}
+
+Struct::~Struct() = default;
+
+const std::string& Struct::GetName() const {
+  return name_;
+}
+
+const std::vector<Argument> Struct::GetVariables() const {
+  return variables_;
 }
 
 }  // namespace epoxy

@@ -107,5 +107,57 @@ TEST(DriverTest, CanParseFunctionsVariations) {
             0);
 }
 
+TEST(DriverTest, CanParseStruct) {
+  Driver driver;
+  auto result = driver.Parse(R"~(
+
+    namespace foo {
+      struct Foo {
+        int32_t quick;
+        int64_t brown;
+        int32_t fox;
+      }
+    }
+
+    )~");
+
+  driver.PrettyPrintErrors(std::cerr);
+  ASSERT_EQ(result, Driver::ParserResult::kSuccess);
+  ASSERT_EQ(driver.GetNamespaces().size(), 1u);
+  ASSERT_EQ(driver.GetNamespaces()[0].GetStructs().size(), 1u);
+  ASSERT_EQ(driver.GetNamespaces()[0].GetStructs()[0].GetName(), "Foo");
+  ASSERT_EQ(driver.GetNamespaces()[0].GetStructs()[0].GetVariables().size(), 3);
+  ASSERT_EQ(driver.GetNamespaces()[0]
+                .GetStructs()[0]
+                .GetVariables()[0]
+                .GetPrimitive(),
+            Primitive::kInt32);
+  ASSERT_EQ(driver.GetNamespaces()[0]
+                .GetStructs()[0]
+                .GetVariables()[1]
+                .GetPrimitive(),
+            Primitive::kInt64);
+  ASSERT_EQ(driver.GetNamespaces()[0]
+                .GetStructs()[0]
+                .GetVariables()[2]
+                .GetPrimitive(),
+            Primitive::kInt32);
+  ASSERT_EQ(driver.GetNamespaces()[0]
+                .GetStructs()[0]
+                .GetVariables()[0]
+                .GetIdentifier(),
+            "quick");
+  ASSERT_EQ(driver.GetNamespaces()[0]
+                .GetStructs()[0]
+                .GetVariables()[1]
+                .GetIdentifier(),
+            "brown");
+  ASSERT_EQ(driver.GetNamespaces()[0]
+                .GetStructs()[0]
+                .GetVariables()[2]
+                .GetIdentifier(),
+            "fox");
+}
+
 }  // namespace testing
 }  // namespace epoxy

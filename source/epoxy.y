@@ -66,7 +66,9 @@
 %type <epoxy::Function> Function
 %type <epoxy::Argument> Argument
 %type <std::vector<epoxy::Argument>> ArgumentList
+%type <std::vector<epoxy::Argument>> VariableList
 %type <epoxy::Primitive> Primitive
+%type <epoxy::Struct> Struct
 
 %start SourceFile
 
@@ -89,6 +91,7 @@ NamespaceItems
 
 NamespaceItem
   : Function  { $$ = $1; }
+  | Struct    { $$ = $1; }
   ;
 
 Function
@@ -99,6 +102,16 @@ Function
 ArgumentList
   : Argument                        { $$ = {$1}; }
   | ArgumentList COMMA Argument     { $$ = $1; $$.push_back($3); }
+  ;
+
+Struct
+  : STRUCT IDENTIFIER CURLY_LEFT VariableList  CURLY_RIGHT { $$ = epoxy::Struct{$2, $4}; }
+  | STRUCT IDENTIFIER CURLY_LEFT               CURLY_RIGHT { $$ = epoxy::Struct{$2, {}}; }
+  ;
+
+VariableList
+  : Argument     SEMI_COLON     { $$ = {$1}; }
+  | VariableList Argument       { $$ = $1; $$.push_back($2); }
   ;
 
 Argument

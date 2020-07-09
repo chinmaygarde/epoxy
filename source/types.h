@@ -52,7 +52,24 @@ class Function {
   Primitive return_type_;
 };
 
-using NamespaceItem = std::variant<Function>;
+class Struct {
+ public:
+  Struct();
+
+  Struct(std::string name, std::vector<Argument> variables);
+
+  ~Struct();
+
+  const std::string& GetName() const;
+
+  const std::vector<Argument> GetVariables() const;
+
+ private:
+  std::string name_;
+  std::vector<Argument> variables_;
+};
+
+using NamespaceItem = std::variant<Function, Struct>;
 using NamespaceItems = std::vector<NamespaceItem>;
 
 class Namespace {
@@ -67,9 +84,12 @@ class Namespace {
 
   const std::vector<Function>& GetFunctions() const;
 
+  const std::vector<Struct>& GetStructs() const;
+
  private:
   std::string name_;
   std::vector<Function> functions_;
+  std::vector<Struct> structs_;
 };
 
 }  // namespace epoxy
