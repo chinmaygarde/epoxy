@@ -1,0 +1,6 @@
+name: epoxy_hello
+
+version: 0.0.1
+
+dependencies:
+  path: ^1.7.0

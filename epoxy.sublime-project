@@ -1,0 +1,54 @@
+{
+  "build_systems":
+  [
+    {
+      "file_regex": "([a-zA-Z/_\\.\\d+-]+):(\\d+):(\\d+): ([\\w\\s':<>,&()^*=;-]+)",
+      "name": "Epoxy Build All",
+      "shell": true,
+      "shell_cmd": "(mkdir -p build/clang && cmake ../.. -G Ninja && ninja && ./source/epoxy_unittests)",
+      "working_dir": "${project_path}/build/clang"
+    },
+  ],
+  "folders":
+  [
+    {
+      "folder_exclude_patterns":
+      [
+        "build"
+      ],
+      "follow_symlinks": false,
+      "name": "Epoxy",
+      "path": "."
+    },
+    {
+      "file_include_patterns":
+      [
+        "compile_commands.json",
+        "*.h",
+        "*.c",
+        "*.hh",
+        "*.cc",
+      ],
+      "follow_symlinks": false,
+      "name": "Build",
+      "path": "build"
+    }
+  ],
+  "settings":
+  {
+    "LSP":
+    {
+      "clangd":
+      {
+        "command":
+        [
+          "clangd",
+          "--compile-commands-dir=build/clang",
+          "--clang-tidy",
+          "-header-insertion=never"
+        ],
+        "enabled": true
+      }
+    }
+  }
+}
