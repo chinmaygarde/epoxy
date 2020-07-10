@@ -50,8 +50,15 @@
   PAREN_RIGHT             ")"
   COMMA                   ","
 
+  INT_8_T                 "int8_t"
+  INT_16_T                "int16_t"
   INT_32_T                "int32_t"
   INT_64_T                "int64_t"
+
+  UINT_8_T                "uint8_t"
+  UINT_16_T               "uint16_t"
+  UINT_32_T               "uint32_t"
+  UINT_64_T               "uint64_t"
 
   ARROW                   "->"
   ;
@@ -123,8 +130,14 @@ VariableList
   ;
 
 Primitive
-  : INT_32_T { $$ = epoxy::Primitive::kInt32; }
-  | INT_64_T { $$ = epoxy::Primitive::kInt64; }
+  : INT_8_T    { $$ = epoxy::Primitive::kInt8; }
+  | INT_16_T   { $$ = epoxy::Primitive::kInt16; }
+  | INT_32_T   { $$ = epoxy::Primitive::kInt32; }
+  | INT_64_T   { $$ = epoxy::Primitive::kInt64; }
+  | UINT_8_T   { $$ = epoxy::Primitive::kUnsignedInt8; }
+  | UINT_16_T  { $$ = epoxy::Primitive::kUnsignedInt16; }
+  | UINT_32_T  { $$ = epoxy::Primitive::kUnsignedInt32; }
+  | UINT_64_T  { $$ = epoxy::Primitive::kUnsignedInt64; }
   ;
 
 %%

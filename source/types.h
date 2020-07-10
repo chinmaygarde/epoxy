@@ -9,8 +9,14 @@
 namespace epoxy {
 
 enum class Primitive {
+  kInt8,
+  kInt16,
   kInt32,
   kInt64,
+  kUnsignedInt8,
+  kUnsignedInt16,
+  kUnsignedInt32,
+  kUnsignedInt64,
 };
 
 class Argument {

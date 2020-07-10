@@ -38,8 +38,15 @@ WS                      [ \t\v\n\f]
 "class"                return epoxy::Parser::make_CLASS(CURRENT_LOC);
 "struct"               return epoxy::Parser::make_STRUCT(CURRENT_LOC);
 "function"             return epoxy::Parser::make_FUNCTION(CURRENT_LOC);
+
+"int8_t"               return epoxy::Parser::make_INT_8_T(CURRENT_LOC);
+"int16_t"              return epoxy::Parser::make_INT_16_T(CURRENT_LOC);
 "int32_t"              return epoxy::Parser::make_INT_32_T(CURRENT_LOC);
 "int64_t"              return epoxy::Parser::make_INT_64_T(CURRENT_LOC);
+"uint8_t"              return epoxy::Parser::make_UINT_8_T(CURRENT_LOC);
+"uint16_t"             return epoxy::Parser::make_UINT_16_T(CURRENT_LOC);
+"uint32_t"             return epoxy::Parser::make_UINT_32_T(CURRENT_LOC);
+"uint64_t"             return epoxy::Parser::make_UINT_64_T(CURRENT_LOC);
 
 ";"                    return epoxy::Parser::make_SEMI_COLON(CURRENT_LOC);
 "{"                    return epoxy::Parser::make_CURLY_LEFT(CURRENT_LOC);

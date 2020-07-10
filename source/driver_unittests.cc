@@ -269,5 +269,112 @@ TEST(DriverTest, CanParseStructVariants) {
             "fox2");
 }
 
+TEST(DriverTest, CanParseAllPrimitives) {
+  Driver driver;
+  auto result = driver.Parse(R"~(
+
+    namespace foo {
+      struct Foo {
+        int8_t a1;
+        int16_t a2;
+        int32_t a3;
+        int64_t a4;
+        uint8_t a5;
+        uint16_t a6;
+        uint32_t a7;
+        uint64_t a8;
+      }
+    }
+
+    )~");
+
+  driver.PrettyPrintErrors(std::cerr);
+  ASSERT_EQ(result, Driver::ParserResult::kSuccess);
+  ASSERT_EQ(driver.GetNamespaces().size(), 1u);
+  ASSERT_EQ(driver.GetNamespaces()[0].GetStructs().size(), 1u);
+  ASSERT_EQ(driver.GetNamespaces()[0].GetStructs()[0].GetName(), "Foo");
+  ASSERT_EQ(driver.GetNamespaces()[0].GetStructs()[0].GetVariables().size(), 8);
+  ASSERT_EQ(driver.GetNamespaces()[0]
+                .GetStructs()[0]
+                .GetVariables()[0]
+                .GetPrimitive(),
+            Primitive::kInt8);
+  ASSERT_EQ(driver.GetNamespaces()[0]
+                .GetStructs()[0]
+                .GetVariables()[0]
+                .GetIdentifier(),
+            "a1");
+  ASSERT_EQ(driver.GetNamespaces()[0]
+                .GetStructs()[0]
+                .GetVariables()[1]
+                .GetPrimitive(),
+            Primitive::kInt16);
+  ASSERT_EQ(driver.GetNamespaces()[0]
+                .GetStructs()[0]
+                .GetVariables()[1]
+                .GetIdentifier(),
+            "a2");
+  ASSERT_EQ(driver.GetNamespaces()[0]
+                .GetStructs()[0]
+                .GetVariables()[2]
+                .GetPrimitive(),
+            Primitive::kInt32);
+  ASSERT_EQ(driver.GetNamespaces()[0]
+                .GetStructs()[0]
+                .GetVariables()[2]
+                .GetIdentifier(),
+            "a3");
+  ASSERT_EQ(driver.GetNamespaces()[0]
+                .GetStructs()[0]
+                .GetVariables()[3]
+                .GetPrimitive(),
+            Primitive::kInt64);
+  ASSERT_EQ(driver.GetNamespaces()[0]
+                .GetStructs()[0]
+                .GetVariables()[3]
+                .GetIdentifier(),
+            "a4");
+  ASSERT_EQ(driver.GetNamespaces()[0]
+                .GetStructs()[0]
+                .GetVariables()[4]
+                .GetPrimitive(),
+            Primitive::kUnsignedInt8);
+  ASSERT_EQ(driver.GetNamespaces()[0]
+                .GetStructs()[0]
+                .GetVariables()[4]
+                .GetIdentifier(),
+            "a5");
+  ASSERT_EQ(driver.GetNamespaces()[0]
+                .GetStructs()[0]
+                .GetVariables()[5]
+                .GetPrimitive(),
+            Primitive::kUnsignedInt16);
+  ASSERT_EQ(driver.GetNamespaces()[0]
+                .GetStructs()[0]
+                .GetVariables()[5]
+                .GetIdentifier(),
+            "a6");
+  ASSERT_EQ(driver.GetNamespaces()[0]
+                .GetStructs()[0]
+                .GetVariables()[6]
+                .GetPrimitive(),
+            Primitive::kUnsignedInt32);
+  ASSERT_EQ(driver.GetNamespaces()[0]
+                .GetStructs()[0]
+                .GetVariables()[6]
+                .GetIdentifier(),
+            "a7");
+  ASSERT_EQ(driver.GetNamespaces()[0]
+                .GetStructs()[0]
+                .GetVariables()[7]
+                .GetPrimitive(),
+            Primitive::kUnsignedInt64);
+  ASSERT_EQ(driver.GetNamespaces()[0]
+                .GetStructs()[0]
+                .GetVariables()[7]
+                .GetIdentifier(),
+            "a8");
+}
+
 }  // namespace testing
 }  // namespace epoxy
