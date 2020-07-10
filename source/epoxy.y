@@ -31,7 +31,6 @@
 
 %code {
 #include "decls.h"
-#include "lexer.h"
 }
 
 %token
@@ -75,8 +74,13 @@
 %%
 
 SourceFile
-  : Namespace { driver.AddNamespace($1); }
-    | %empty
+  : NamespaceList
+  | %empty
+  ;
+
+NamespaceList
+  : Namespace                 { driver.AddNamespace($1); }
+  | NamespaceList Namespace   { driver.AddNamespace($2); }
   ;
 
 Namespace
@@ -109,13 +113,13 @@ Struct
   | STRUCT IDENTIFIER CURLY_LEFT               CURLY_RIGHT { $$ = epoxy::Struct{$2, {}}; }
   ;
 
-VariableList
-  : Argument     SEMI_COLON     { $$ = {$1}; }
-  | VariableList Argument       { $$ = $1; $$.push_back($2); }
-  ;
-
 Argument
   : Primitive IDENTIFIER { $$ = epoxy::Argument{$1, $2}; }
+  ;
+
+VariableList
+  : Argument SEMI_COLON              { $$ = {$1}; }
+  | VariableList Argument SEMI_COLON { $$ = $1; $$.push_back($2); }
   ;
 
 Primitive
