@@ -32,7 +32,7 @@ WS                      [ \t\v\n\f]
 
 <<EOF>>                return epoxy::Parser::make_END(CURRENT_LOC);
 
-"#".*                  {  /* Comment Consumed */  };
+"//".*                  {  /* Comment Consumed */  };
 
 "namespace"            return epoxy::Parser::make_NAMESPACE(CURRENT_LOC);
 "class"                return epoxy::Parser::make_CLASS(CURRENT_LOC);

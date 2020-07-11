@@ -68,11 +68,13 @@ TEST(DriverTest, CanParseMultipleNamespaces) {
 TEST(DriverTest, CommentsAreIgnored) {
   Driver driver;
   auto result = driver.Parse(R"~(
-    # This
+    // This
     namespace foo {
-      # Is a comment
+      // Is a comment
     }
-    # Another comment
+    // Another comment
+    ////////// Another comment
+    //// Another comment
     )~");
 
   driver.PrettyPrintErrors(std::cerr);
@@ -444,8 +446,8 @@ TEST(DriverTest, CanParseVoidAndVoidPointer) {
     namespace foo {
       struct Foo {
         void* a1;
-        # This is illegal but instead of making the grammar more complicated
-        # we will error out in the sema pass instead.
+        // This is illegal but instead of making the grammar more complicated
+        // we will error out in the sema pass instead.
         void a2;
       }
       function world() -> void*
