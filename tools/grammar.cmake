@@ -10,7 +10,7 @@ function(add_lexer TARGET FLEX_FILE_PATH)
     find_program (FLEX_PROGRAM flex)
   endif()
   if(NOT FLEX_PROGRAM)
-    message(FATAL_ERROR "Could not find flex (>=2.6.4) on the host.")
+    message(FATAL_ERROR "Could not find flex (>=2.6.3) on the host.")
   endif()
   get_filename_component(FLEX_FILE_PATH ${FLEX_FILE_PATH} ABSOLUTE)
   add_custom_command(
