@@ -3,3 +3,4 @@ build/
 epoxy.sublime-workspace
 cmake-*
 .idea/
+.clangd/

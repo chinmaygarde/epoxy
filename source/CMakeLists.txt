@@ -26,6 +26,7 @@ endif()
 
 if(WINDOWS)
   add_compile_definitions(NOMINMAX)
+  add_compile_definitions(YY_NO_UNISTD_H)
 endif(WINDOWS)
 
 add_library(epoxy
