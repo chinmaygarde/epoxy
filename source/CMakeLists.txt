@@ -29,31 +29,36 @@ if(WINDOWS)
 endif(WINDOWS)
 
 add_library(epoxy
-  # main.cc
-  driver.h
+  code_gen.cc
+  code_gen.h
+  code_gen_cxx.cc
+  code_gen_cxx.h
+  code_gen_dart.cc
+  code_gen_dart.h
   driver.cc
-  types.h
-  types.cc
+  driver.h
   macros.h
-  scanner.h
   scanner.cc
-  sema.h
+  scanner.h
   sema.cc
+  sema.h
+  types.cc
+  types.h
 )
 
 add_lexer(epoxy
   epoxy.l
-    lexer.h
     lexer.cc
+    lexer.h
 )
 
 add_parser(epoxy
   epoxy.y
     location.hh
-    stack.hh
-    position.hh
-    parser.h
     parser.cc
+    parser.h
+    position.hh
+    stack.hh
 )
 
 target_include_directories(epoxy

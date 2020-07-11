@@ -4,6 +4,7 @@
 #include "sema.h"
 
 namespace epoxy {
+namespace testing {
 
 TEST(SemaTest, Empty) {
   Driver driver;
@@ -48,4 +49,5 @@ TEST(SemaTest, NonPointerVoidMemberIsError) {
   ASSERT_EQ(result, Sema::Result::kError);
 }
 
+}  // namespace testing
 }  // namespace epoxy

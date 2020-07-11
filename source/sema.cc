@@ -24,11 +24,19 @@ Sema::Result Sema::Perform(std::vector<Namespace> namespaces_vector) {
     }
   }
 
+  for (const auto& ns : namespaces) {
+    namespaces_.push_back(ns.second);
+  }
+
   return Result::kSuccess;
 }
 
 void Sema::PrettyPrintErrors(std::ostream& stream) {
   stream << errors_.str() << std::endl;
+}
+
+const std::vector<Namespace>& Sema::GetNamespaces() const {
+  return namespaces_;
 }
 
 }  // namespace epoxy

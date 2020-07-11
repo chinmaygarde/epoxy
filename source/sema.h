@@ -23,8 +23,11 @@ class Sema {
 
   void PrettyPrintErrors(std::ostream& stream);
 
+  const std::vector<Namespace>& GetNamespaces() const;
+
  private:
   std::stringstream errors_;
+  std::vector<Namespace> namespaces_;
 
   EPOXY_DISALLOW_COPY_AND_ASSIGN(Sema);
 };
