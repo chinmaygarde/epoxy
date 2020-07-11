@@ -39,6 +39,7 @@ WS                      [ \t\v\n\f]
 "struct"               return epoxy::Parser::make_STRUCT(CURRENT_LOC);
 "function"             return epoxy::Parser::make_FUNCTION(CURRENT_LOC);
 
+"void"                 return epoxy::Parser::make_VOID_T(CURRENT_LOC);
 "int8_t"               return epoxy::Parser::make_INT_8_T(CURRENT_LOC);
 "int16_t"              return epoxy::Parser::make_INT_16_T(CURRENT_LOC);
 "int32_t"              return epoxy::Parser::make_INT_32_T(CURRENT_LOC);

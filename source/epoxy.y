@@ -50,6 +50,8 @@
   PAREN_RIGHT             ")"
   COMMA                   ","
 
+  VOID_T                  "void"
+
   INT_8_T                 "int8_t"
   INT_16_T                "int16_t"
   INT_32_T                "int32_t"
@@ -134,7 +136,8 @@ VariableList
   ;
 
 Primitive
-  : INT_8_T    { $$ = epoxy::Primitive::kInt8; }
+  : VOID_T     { $$ = epoxy::Primitive::kVoid; }
+  | INT_8_T    { $$ = epoxy::Primitive::kInt8; }
   | INT_16_T   { $$ = epoxy::Primitive::kInt16; }
   | INT_32_T   { $$ = epoxy::Primitive::kInt32; }
   | INT_64_T   { $$ = epoxy::Primitive::kInt64; }

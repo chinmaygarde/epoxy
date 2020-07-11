@@ -437,5 +437,81 @@ TEST(DriverTest, CanParsePointers) {
   ASSERT_TRUE(driver.GetNamespaces()[0].GetFunctions()[1].ReturnsPointer());
 }
 
+TEST(DriverTest, CanParseVoidAndVoidPointer) {
+  Driver driver;
+  auto result = driver.Parse(R"~(
+
+    namespace foo {
+      struct Foo {
+        void* a1;
+        # This is illegal but instead of making the grammar more complicated
+        # we will error out in the sema pass instead.
+        void a2;
+      }
+      function world() -> void*
+      function world2(void* a) -> void*
+    }
+
+    )~");
+
+  driver.PrettyPrintErrors(std::cerr);
+  ASSERT_EQ(result, Driver::ParserResult::kSuccess);
+  ASSERT_EQ(driver.GetNamespaces().size(), 1u);
+  ASSERT_EQ(driver.GetNamespaces()[0].GetStructs().size(), 1u);
+  ASSERT_EQ(driver.GetNamespaces()[0].GetStructs()[0].GetName(), "Foo");
+  ASSERT_EQ(driver.GetNamespaces()[0].GetStructs()[0].GetVariables().size(), 2);
+  ASSERT_EQ(driver.GetNamespaces()[0]
+                .GetStructs()[0]
+                .GetVariables()[0]
+                .GetPrimitive(),
+            Primitive::kVoid);
+  ASSERT_EQ(driver.GetNamespaces()[0]
+                .GetStructs()[0]
+                .GetVariables()[0]
+                .GetIdentifier(),
+            "a1");
+  ASSERT_TRUE(
+      driver.GetNamespaces()[0].GetStructs()[0].GetVariables()[0].IsPointer());
+  ASSERT_EQ(driver.GetNamespaces()[0]
+                .GetStructs()[0]
+                .GetVariables()[1]
+                .GetPrimitive(),
+            Primitive::kVoid);
+  ASSERT_EQ(driver.GetNamespaces()[0]
+                .GetStructs()[0]
+                .GetVariables()[1]
+                .GetIdentifier(),
+            "a2");
+  ASSERT_FALSE(
+      driver.GetNamespaces()[0].GetStructs()[0].GetVariables()[1].IsPointer());
+  ASSERT_EQ(driver.GetNamespaces()[0].GetFunctions().size(), 2u);
+  ASSERT_EQ(driver.GetNamespaces()[0].GetFunctions()[0].GetName(), "world");
+  ASSERT_EQ(driver.GetNamespaces()[0].GetFunctions()[0].GetArguments().size(),
+            0u);
+  ASSERT_EQ(driver.GetNamespaces()[0].GetFunctions()[0].GetReturnType(),
+            Primitive::kVoid);
+  ASSERT_TRUE(driver.GetNamespaces()[0].GetFunctions()[0].ReturnsPointer());
+  ASSERT_EQ(driver.GetNamespaces()[0].GetFunctions()[1].GetName(), "world2");
+  ASSERT_EQ(driver.GetNamespaces()[0].GetFunctions()[1].GetArguments().size(),
+            1u);
+  ASSERT_EQ(driver.GetNamespaces()[0]
+                .GetFunctions()[1]
+                .GetArguments()[0]
+                .GetIdentifier(),
+            "a");
+  ASSERT_TRUE(driver.GetNamespaces()[0]
+                  .GetFunctions()[1]
+                  .GetArguments()[0]
+                  .IsPointer());
+  ASSERT_EQ(driver.GetNamespaces()[0]
+                .GetFunctions()[1]
+                .GetArguments()[0]
+                .GetPrimitive(),
+            Primitive::kVoid);
+  ASSERT_EQ(driver.GetNamespaces()[0].GetFunctions()[1].GetReturnType(),
+            Primitive::kVoid);
+  ASSERT_TRUE(driver.GetNamespaces()[0].GetFunctions()[1].ReturnsPointer());
+}
+
 }  // namespace testing
 }  // namespace epoxy

@@ -9,6 +9,7 @@
 namespace epoxy {
 
 enum class Primitive {
+  kVoid,
   kInt8,
   kInt16,
   kInt32,
