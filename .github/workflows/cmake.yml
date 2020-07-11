@@ -11,12 +11,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Make Build Directory
-      run: apt update && apt install -y wget xz-utils m4 cmake ninja-build build-essential flex bison
+    - name: Install Dependencies
+      run: sudo apt update && sudo apt install -y wget xz-utils m4 cmake ninja-build build-essential
     - name: Install Bison
-      run: (wget -O /tmp/bison.tar.xz https://ftp.gnu.org/gnu/bison/bison-3.6.tar.xz && tar -xf /tmp/bison.tar.xz -C /tmp && cd /tmp/bison-3.6 && ./configure && make install)
+      run: (wget -O /tmp/bison.tar.xz https://ftp.gnu.org/gnu/bison/bison-3.6.tar.xz && tar -xf /tmp/bison.tar.xz -C /tmp && cd /tmp/bison-3.6 && ./configure && sudo make install)
     - name: Install Flex
-      run: (wget -O /tmp/flex.tar.gz https://github.com/westes/flex/releases/download/v2.6.3/flex-2.6.3.tar.gz && tar -xf /tmp/flex.tar.gz -C /tmp/ && cd /tmp/flex-2.6.3 && ./configure && make install)
+      run: (wget -O /tmp/flex.tar.gz https://github.com/westes/flex/releases/download/v2.6.3/flex-2.6.3.tar.gz && tar -xf /tmp/flex.tar.gz -C /tmp/ && cd /tmp/flex-2.6.3 && ./configure && sudo make install)
     - name: Make Build Directory
       run: mkdir -p build
     - name: Generate CMake Project
