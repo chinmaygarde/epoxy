@@ -1,5 +1,6 @@
 #pragma once
 
+#include <sstream>
 #include <vector>
 
 #include "macros.h"
@@ -9,7 +10,7 @@ namespace epoxy {
 
 class Sema {
  public:
-  enum class SemaResult {
+  enum class Result {
     kSuccess,
     kError,
   };
@@ -18,10 +19,12 @@ class Sema {
 
   ~Sema();
 
-  SemaResult Perform(std::vector<Namespace> namespaces);
+  Result Perform(std::vector<Namespace> namespaces);
+
+  void PrettyPrintErrors(std::ostream& stream);
 
  private:
-  std::vector<std::string> errors_;
+  std::stringstream errors_;
 
   EPOXY_DISALLOW_COPY_AND_ASSIGN(Sema);
 };

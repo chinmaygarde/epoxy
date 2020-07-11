@@ -64,6 +64,7 @@ target_include_directories(epoxy
 
 add_executable(epoxy_unittests
   driver_unittests.cc
+  sema_unittests.cc
 )
 
 target_link_libraries(epoxy_unittests

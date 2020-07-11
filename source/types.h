@@ -1,5 +1,6 @@
 #pragma once
 
+#include <sstream>
 #include <string>
 #include <variant>
 #include <vector>
@@ -34,6 +35,8 @@ class Variable {
 
   bool IsPointer() const;
 
+  bool PassesSema(std::stringstream& stream) const;
+
  private:
   Primitive primitive_;
   std::string identifier_;
@@ -59,6 +62,8 @@ class Function {
 
   bool ReturnsPointer() const;
 
+  bool PassesSema(std::stringstream& stream) const;
+
  private:
   std::string name_;
   std::vector<Variable> arguments_;
@@ -78,6 +83,8 @@ class Struct {
 
   const std::vector<Variable>& GetVariables() const;
 
+  bool PassesSema(std::stringstream& stream) const;
+
  private:
   std::string name_;
   std::vector<Variable> variables_;
@@ -96,14 +103,26 @@ class Namespace {
 
   const std::string& GetName() const;
 
+  void SetName(const std::string& name);
+
   const std::vector<Function>& GetFunctions() const;
 
   const std::vector<Struct>& GetStructs() const;
+
+  void AddFunctions(const std::vector<Function>& functions);
+
+  void AddStructs(const std::vector<Struct>& structs);
+
+  bool PassesSema(std::stringstream& stream) const;
 
  private:
   std::string name_;
   std::vector<Function> functions_;
   std::vector<Struct> structs_;
+
+  bool HasDuplicateFunctions(std::stringstream& stream) const;
+
+  bool HasDuplicateStructs(std::stringstream& stream) const;
 };
 
 }  // namespace epoxy
