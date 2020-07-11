@@ -109,10 +109,10 @@ NamespaceItem
   ;
 
 Function
-  : FUNCTION IDENTIFIER PAREN_LEFT ArgumentList PAREN_RIGHT ARROW Primitive      { $$ = epoxy::Function{$2, $4, $7, false}; }
-  | FUNCTION IDENTIFIER PAREN_LEFT ArgumentList PAREN_RIGHT ARROW Primitive STAR { $$ = epoxy::Function{$2, $4, $7, true}; }
-  | FUNCTION IDENTIFIER PAREN_LEFT              PAREN_RIGHT ARROW Primitive      { $$ = epoxy::Function{$2, {}, $6, false}; }
-  | FUNCTION IDENTIFIER PAREN_LEFT              PAREN_RIGHT ARROW Primitive STAR { $$ = epoxy::Function{$2, {}, $6, true}; }
+  : FUNCTION IDENTIFIER PAREN_LEFT ArgumentList PAREN_RIGHT ARROW Primitive      SEMI_COLON { $$ = epoxy::Function{$2, $4, $7, false}; }
+  | FUNCTION IDENTIFIER PAREN_LEFT ArgumentList PAREN_RIGHT ARROW Primitive STAR SEMI_COLON { $$ = epoxy::Function{$2, $4, $7, true}; }
+  | FUNCTION IDENTIFIER PAREN_LEFT              PAREN_RIGHT ARROW Primitive      SEMI_COLON { $$ = epoxy::Function{$2, {}, $6, false}; }
+  | FUNCTION IDENTIFIER PAREN_LEFT              PAREN_RIGHT ARROW Primitive STAR SEMI_COLON { $$ = epoxy::Function{$2, {}, $6, true}; }
   ;
 
 ArgumentList
