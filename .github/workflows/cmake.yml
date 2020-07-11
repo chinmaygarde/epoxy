@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - name: Fetch Submodules
+      run: git submodule update --init --recursive
     - name: Install Dependencies
       run: sudo apt update && sudo apt install -y wget xz-utils m4 cmake ninja-build build-essential
     - name: Install Bison
