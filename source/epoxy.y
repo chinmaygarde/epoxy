@@ -61,6 +61,7 @@
   UINT_64_T               "uint64_t"
 
   ARROW                   "->"
+  STAR                    "*"
   ;
 
 %token <std::string>
@@ -106,8 +107,10 @@ NamespaceItem
   ;
 
 Function
-  : FUNCTION IDENTIFIER PAREN_LEFT ArgumentList PAREN_RIGHT ARROW Primitive { $$ = epoxy::Function{$2, $4, $7}; }
-  | FUNCTION IDENTIFIER PAREN_LEFT              PAREN_RIGHT ARROW Primitive { $$ = epoxy::Function{$2, {}, $6}; }
+  : FUNCTION IDENTIFIER PAREN_LEFT ArgumentList PAREN_RIGHT ARROW Primitive      { $$ = epoxy::Function{$2, $4, $7, false}; }
+  | FUNCTION IDENTIFIER PAREN_LEFT ArgumentList PAREN_RIGHT ARROW Primitive STAR { $$ = epoxy::Function{$2, $4, $7, true}; }
+  | FUNCTION IDENTIFIER PAREN_LEFT              PAREN_RIGHT ARROW Primitive      { $$ = epoxy::Function{$2, {}, $6, false}; }
+  | FUNCTION IDENTIFIER PAREN_LEFT              PAREN_RIGHT ARROW Primitive STAR { $$ = epoxy::Function{$2, {}, $6, true}; }
   ;
 
 ArgumentList
@@ -121,7 +124,8 @@ Struct
   ;
 
 Argument
-  : Primitive IDENTIFIER { $$ = epoxy::Argument{$1, $2}; }
+  : Primitive IDENTIFIER { $$ = epoxy::Argument{$1, $2, false}; }
+  | Primitive STAR IDENTIFIER  { $$ = epoxy::Argument{$1, $3, true}; }
   ;
 
 VariableList

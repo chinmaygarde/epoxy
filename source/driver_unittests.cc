@@ -376,5 +376,66 @@ TEST(DriverTest, CanParseAllPrimitives) {
             "a8");
 }
 
+TEST(DriverTest, CanParsePointers) {
+  Driver driver;
+  auto result = driver.Parse(R"~(
+
+    namespace foo {
+      struct Foo {
+        int8_t* a1;
+      }
+      function world() -> int64_t*
+      function world2(uint64_t* a) -> int32_t*
+    }
+
+    )~");
+
+  driver.PrettyPrintErrors(std::cerr);
+  ASSERT_EQ(result, Driver::ParserResult::kSuccess);
+  ASSERT_EQ(driver.GetNamespaces().size(), 1u);
+  ASSERT_EQ(driver.GetNamespaces()[0].GetStructs().size(), 1u);
+  ASSERT_EQ(driver.GetNamespaces()[0].GetStructs()[0].GetName(), "Foo");
+  ASSERT_EQ(driver.GetNamespaces()[0].GetStructs()[0].GetVariables().size(), 1);
+  ASSERT_EQ(driver.GetNamespaces()[0]
+                .GetStructs()[0]
+                .GetVariables()[0]
+                .GetPrimitive(),
+            Primitive::kInt8);
+  ASSERT_EQ(driver.GetNamespaces()[0]
+                .GetStructs()[0]
+                .GetVariables()[0]
+                .GetIdentifier(),
+            "a1");
+  ASSERT_TRUE(
+      driver.GetNamespaces()[0].GetStructs()[0].GetVariables()[0].IsPointer());
+  ASSERT_EQ(driver.GetNamespaces()[0].GetFunctions().size(), 2u);
+  ASSERT_EQ(driver.GetNamespaces()[0].GetFunctions()[0].GetName(), "world");
+  ASSERT_EQ(driver.GetNamespaces()[0].GetFunctions()[0].GetArguments().size(),
+            0u);
+  ASSERT_EQ(driver.GetNamespaces()[0].GetFunctions()[0].GetReturnType(),
+            Primitive::kInt64);
+  ASSERT_TRUE(driver.GetNamespaces()[0].GetFunctions()[0].ReturnsPointer());
+  ASSERT_EQ(driver.GetNamespaces()[0].GetFunctions()[1].GetName(), "world2");
+  ASSERT_EQ(driver.GetNamespaces()[0].GetFunctions()[1].GetArguments().size(),
+            1u);
+  ASSERT_EQ(driver.GetNamespaces()[0]
+                .GetFunctions()[1]
+                .GetArguments()[0]
+                .GetIdentifier(),
+            "a");
+  ASSERT_TRUE(driver.GetNamespaces()[0]
+                  .GetFunctions()[1]
+                  .GetArguments()[0]
+                  .IsPointer());
+  ASSERT_EQ(driver.GetNamespaces()[0]
+                .GetFunctions()[1]
+                .GetArguments()[0]
+                .GetPrimitive(),
+            Primitive::kUnsignedInt64);
+  ASSERT_EQ(driver.GetNamespaces()[0].GetFunctions()[1].GetReturnType(),
+            Primitive::kInt32);
+  ASSERT_TRUE(driver.GetNamespaces()[0].GetFunctions()[1].ReturnsPointer());
+}
+
 }  // namespace testing
 }  // namespace epoxy

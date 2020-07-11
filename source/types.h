@@ -23,7 +23,7 @@ class Argument {
  public:
   Argument();
 
-  Argument(Primitive primitive, std::string identifier);
+  Argument(Primitive primitive, std::string identifier, bool is_pointer);
 
   ~Argument();
 
@@ -31,9 +31,12 @@ class Argument {
 
   const std::string& GetIdentifier() const;
 
+  bool IsPointer() const;
+
  private:
   Primitive primitive_;
   std::string identifier_;
+  bool is_pointer_ = false;
 };
 
 class Function {
@@ -42,7 +45,8 @@ class Function {
 
   Function(std::string name,
            std::vector<Argument> arguments,
-           Primitive return_type);
+           Primitive return_type,
+           bool pointer_return);
 
   ~Function();
 
@@ -52,10 +56,13 @@ class Function {
 
   Primitive GetReturnType() const;
 
+  bool ReturnsPointer() const;
+
  private:
   std::string name_;
   std::vector<Argument> arguments_;
   Primitive return_type_;
+  bool pointer_return_ = false;
 };
 
 class Struct {

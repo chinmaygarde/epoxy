@@ -4,8 +4,10 @@ namespace epoxy {
 
 Argument::Argument() = default;
 
-Argument::Argument(Primitive primitive, std::string identifier)
-    : primitive_(std::move(primitive)), identifier_(std::move(identifier)) {}
+Argument::Argument(Primitive primitive, std::string identifier, bool is_pointer)
+    : primitive_(std::move(primitive)),
+      identifier_(std::move(identifier)),
+      is_pointer_(is_pointer) {}
 
 Argument::~Argument() = default;
 
@@ -17,14 +19,20 @@ const std::string& Argument::GetIdentifier() const {
   return identifier_;
 }
 
+bool Argument::IsPointer() const {
+  return is_pointer_;
+}
+
 Function::Function() = default;
 
 Function::Function(std::string name,
                    std::vector<Argument> arguments,
-                   Primitive return_type)
+                   Primitive return_type,
+                   bool pointer_return)
     : name_(std::move(name)),
       arguments_(std::move(arguments)),
-      return_type_(std::move(return_type)) {}
+      return_type_(std::move(return_type)),
+      pointer_return_(pointer_return) {}
 
 Function::~Function() = default;
 
@@ -38,6 +46,10 @@ const std::vector<Argument>& Function::GetArguments() const {
 
 Primitive Function::GetReturnType() const {
   return return_type_;
+}
+
+bool Function::ReturnsPointer() const {
+  return pointer_return_;
 }
 
 Namespace::Namespace() = default;

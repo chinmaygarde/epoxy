@@ -55,6 +55,7 @@ WS                      [ \t\v\n\f]
 ")"                    return epoxy::Parser::make_PAREN_RIGHT(CURRENT_LOC);
 "->"                   return epoxy::Parser::make_ARROW(CURRENT_LOC);
 ","                    return epoxy::Parser::make_COMMA(CURRENT_LOC);
+"*"                    return epoxy::Parser::make_STAR(CURRENT_LOC);
 
 {L}{A}*                return epoxy::Parser::make_IDENTIFIER(yytext, CURRENT_LOC);
 
