@@ -30,7 +30,7 @@ class Driver {
 
   // TODO: Accessed by epoxy_lex. This should be a private with a friend
   // function.
-  location location;
+  location loc;
 
   void ReportParsingError(const class location& location,
                           const std::string& message);

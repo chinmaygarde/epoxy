@@ -9,7 +9,7 @@
 #include "types.h"
 #include "decls.h"
 
-#define CURRENT_LOC driver.location
+#define CURRENT_LOC driver.loc
 
 %}
 
