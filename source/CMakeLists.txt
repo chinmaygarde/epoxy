@@ -37,6 +37,8 @@ add_library(epoxy
   macros.h
   scanner.h
   scanner.cc
+  sema.h
+  sema.cc
 )
 
 add_lexer(epoxy

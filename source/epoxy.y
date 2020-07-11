@@ -73,9 +73,9 @@
 %type <epoxy::NamespaceItems> NamespaceItems
 %type <epoxy::NamespaceItem> NamespaceItem
 %type <epoxy::Function> Function
-%type <epoxy::Argument> Argument
-%type <std::vector<epoxy::Argument>> ArgumentList
-%type <std::vector<epoxy::Argument>> VariableList
+%type <epoxy::Variable> Variable
+%type <std::vector<epoxy::Variable>> ArgumentList
+%type <std::vector<epoxy::Variable>> VariableList
 %type <epoxy::Primitive> Primitive
 %type <epoxy::Struct> Struct
 
@@ -116,8 +116,8 @@ Function
   ;
 
 ArgumentList
-  : Argument                        { $$ = {$1}; }
-  | ArgumentList COMMA Argument     { $$ = $1; $$.push_back($3); }
+  : Variable                        { $$ = {$1}; }
+  | ArgumentList COMMA Variable     { $$ = $1; $$.push_back($3); }
   ;
 
 Struct
@@ -125,14 +125,14 @@ Struct
   | STRUCT IDENTIFIER CURLY_LEFT               CURLY_RIGHT { $$ = epoxy::Struct{$2, {}}; }
   ;
 
-Argument
-  : Primitive IDENTIFIER { $$ = epoxy::Argument{$1, $2, false}; }
-  | Primitive STAR IDENTIFIER  { $$ = epoxy::Argument{$1, $3, true}; }
+Variable
+  : Primitive IDENTIFIER       { $$ = epoxy::Variable{$1, $2, false}; }
+  | Primitive STAR IDENTIFIER  { $$ = epoxy::Variable{$1, $3, true};  }
   ;
 
 VariableList
-  : Argument SEMI_COLON              { $$ = {$1}; }
-  | VariableList Argument SEMI_COLON { $$ = $1; $$.push_back($2); }
+  : Variable SEMI_COLON              { $$ = {$1}; }
+  | VariableList Variable SEMI_COLON { $$ = $1; $$.push_back($2); }
   ;
 
 Primitive

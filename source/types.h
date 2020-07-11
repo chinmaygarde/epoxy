@@ -20,13 +20,13 @@ enum class Primitive {
   kUnsignedInt64,
 };
 
-class Argument {
+class Variable {
  public:
-  Argument();
+  Variable();
 
-  Argument(Primitive primitive, std::string identifier, bool is_pointer);
+  Variable(Primitive primitive, std::string identifier, bool is_pointer);
 
-  ~Argument();
+  ~Variable();
 
   Primitive GetPrimitive() const;
 
@@ -45,7 +45,7 @@ class Function {
   Function();
 
   Function(std::string name,
-           std::vector<Argument> arguments,
+           std::vector<Variable> arguments,
            Primitive return_type,
            bool pointer_return);
 
@@ -53,7 +53,7 @@ class Function {
 
   const std::string& GetName() const;
 
-  const std::vector<Argument>& GetArguments() const;
+  const std::vector<Variable>& GetArguments() const;
 
   Primitive GetReturnType() const;
 
@@ -61,7 +61,7 @@ class Function {
 
  private:
   std::string name_;
-  std::vector<Argument> arguments_;
+  std::vector<Variable> arguments_;
   Primitive return_type_;
   bool pointer_return_ = false;
 };
@@ -70,17 +70,17 @@ class Struct {
  public:
   Struct();
 
-  Struct(std::string name, std::vector<Argument> variables);
+  Struct(std::string name, std::vector<Variable> variables);
 
   ~Struct();
 
   const std::string& GetName() const;
 
-  const std::vector<Argument> GetVariables() const;
+  const std::vector<Variable>& GetVariables() const;
 
  private:
   std::string name_;
-  std::vector<Argument> variables_;
+  std::vector<Variable> variables_;
 };
 
 using NamespaceItem = std::variant<Function, Struct>;

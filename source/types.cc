@@ -2,31 +2,31 @@
 
 namespace epoxy {
 
-Argument::Argument() = default;
+Variable::Variable() = default;
 
-Argument::Argument(Primitive primitive, std::string identifier, bool is_pointer)
+Variable::Variable(Primitive primitive, std::string identifier, bool is_pointer)
     : primitive_(std::move(primitive)),
       identifier_(std::move(identifier)),
       is_pointer_(is_pointer) {}
 
-Argument::~Argument() = default;
+Variable::~Variable() = default;
 
-Primitive Argument::GetPrimitive() const {
+Primitive Variable::GetPrimitive() const {
   return primitive_;
 }
 
-const std::string& Argument::GetIdentifier() const {
+const std::string& Variable::GetIdentifier() const {
   return identifier_;
 }
 
-bool Argument::IsPointer() const {
+bool Variable::IsPointer() const {
   return is_pointer_;
 }
 
 Function::Function() = default;
 
 Function::Function(std::string name,
-                   std::vector<Argument> arguments,
+                   std::vector<Variable> arguments,
                    Primitive return_type,
                    bool pointer_return)
     : name_(std::move(name)),
@@ -40,7 +40,7 @@ const std::string& Function::GetName() const {
   return name_;
 }
 
-const std::vector<Argument>& Function::GetArguments() const {
+const std::vector<Variable>& Function::GetArguments() const {
   return arguments_;
 }
 
@@ -83,7 +83,7 @@ const std::vector<Struct>& Namespace::GetStructs() const {
 
 Struct::Struct() = default;
 
-Struct::Struct(std::string name, std::vector<Argument> variables)
+Struct::Struct(std::string name, std::vector<Variable> variables)
     : name_(std::move(name)), variables_(std::move(variables)) {}
 
 Struct::~Struct() = default;
@@ -92,7 +92,7 @@ const std::string& Struct::GetName() const {
   return name_;
 }
 
-const std::vector<Argument> Struct::GetVariables() const {
+const std::vector<Variable>& Struct::GetVariables() const {
   return variables_;
 }
 
