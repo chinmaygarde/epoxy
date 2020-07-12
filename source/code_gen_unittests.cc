@@ -1,12 +1,15 @@
+#include <iostream>
+
 #include <gtest/gtest.h>
 
+#include "code_gen.h"
 #include "driver.h"
 #include "sema.h"
 
 namespace epoxy {
 namespace testing {
 
-TEST(CodeGenDartTest, Simple) {
+TEST(CodeGenTest, Simple) {
   Driver driver;
   auto driver_result = driver.Parse(R"~(
     namespace foo {
@@ -22,6 +25,10 @@ TEST(CodeGenDartTest, Simple) {
   Sema sema;
   auto result = sema.Perform(driver.GetNamespaces());
   ASSERT_EQ(result, Sema::Result::kSuccess);
+  auto code_gen = CodeGen::CreateGenerator(CodeGen::Type::kCXX);
+  ASSERT_TRUE(code_gen);
+  auto code_gen_result = code_gen->Render(sema.GetNamespaces());
+  ASSERT_TRUE(code_gen_result.result.has_value());
 }
 
 }  // namespace testing

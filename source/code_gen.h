@@ -11,6 +11,12 @@ namespace epoxy {
 
 class CodeGen {
  public:
+  enum class Type {
+    kCXX,
+    kDart,
+  };
+  static std::unique_ptr<CodeGen> CreateGenerator(Type type);
+
   CodeGen();
 
   virtual ~CodeGen();

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <nlohmann/json.hpp>
 #include <sstream>
 #include <string>
 #include <variant>
@@ -37,6 +38,8 @@ class Variable {
 
   bool PassesSema(std::stringstream& stream) const;
 
+  nlohmann::json::object_t GetJSONObject() const;
+
  private:
   Primitive primitive_;
   std::string identifier_;
@@ -64,6 +67,8 @@ class Function {
 
   bool PassesSema(std::stringstream& stream) const;
 
+  nlohmann::json::object_t GetJSONObject() const;
+
  private:
   std::string name_;
   std::vector<Variable> arguments_;
@@ -84,6 +89,8 @@ class Struct {
   const std::vector<Variable>& GetVariables() const;
 
   bool PassesSema(std::stringstream& stream) const;
+
+  nlohmann::json::object_t GetJSONObject() const;
 
  private:
   std::string name_;
@@ -114,6 +121,8 @@ class Namespace {
   void AddStructs(const std::vector<Struct>& structs);
 
   bool PassesSema(std::stringstream& stream) const;
+
+  nlohmann::json::object_t GetJSONObject() const;
 
  private:
   std::string name_;

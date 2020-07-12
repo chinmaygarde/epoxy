@@ -35,6 +35,38 @@ bool Variable::PassesSema(std::stringstream& stream) const {
   return true;
 }
 
+static std::string PrimitiveToTypeString(Primitive primitive) {
+  switch (primitive) {
+    case Primitive::kVoid:
+      return "void_t";
+    case Primitive::kInt8:
+      return "int8_t";
+    case Primitive::kInt16:
+      return "int16_t";
+    case Primitive::kInt32:
+      return "int32_t";
+    case Primitive::kInt64:
+      return "int64_t";
+    case Primitive::kUnsignedInt8:
+      return "uint8_t";
+    case Primitive::kUnsignedInt16:
+      return "uint16_t";
+    case Primitive::kUnsignedInt32:
+      return "uint32_t";
+    case Primitive::kUnsignedInt64:
+      return "uint64_t";
+  };
+  return "unknown";
+}
+
+nlohmann::json::object_t Variable::GetJSONObject() const {
+  nlohmann::json::object_t var;
+  var["type"] = PrimitiveToTypeString(primitive_);
+  var["identifier"] = identifier_;
+  var["is_pointer"] = is_pointer_;
+  return var;
+}
+
 Function::Function() = default;
 
 Function::Function(std::string name,
@@ -71,6 +103,22 @@ bool Function::PassesSema(std::stringstream& stream) const {
     }
   }
   return true;
+}
+
+nlohmann::json::object_t Function::GetJSONObject() const {
+  auto args = nlohmann::json::array_t{};
+
+  for (const auto& arg : arguments_) {
+    args.emplace_back(arg.GetJSONObject());
+  }
+
+  nlohmann::json::object_t fun;
+  fun["name"] = name_;
+  fun["return_type"] = PrimitiveToTypeString(return_type_);
+  fun["pointer_return"] = pointer_return_;
+  fun["arguments"] = std::move(args);
+
+  return fun;
 }
 
 Namespace::Namespace() = default;
@@ -171,6 +219,26 @@ bool Namespace::PassesSema(std::stringstream& stream) const {
   return true;
 }
 
+nlohmann::json::object_t Namespace::GetJSONObject() const {
+  nlohmann::json::object_t ns;
+
+  auto structs = nlohmann::json::array_t{};
+  auto funcs = nlohmann::json::array_t{};
+
+  for (const auto& str : structs_) {
+    structs.emplace_back(str.GetJSONObject());
+  }
+
+  for (const auto& fun : functions_) {
+    funcs.emplace_back(fun.GetJSONObject());
+  }
+
+  ns["name"] = name_;
+  ns["functions"] = std::move(funcs);
+  ns["structs"] = std::move(structs);
+  return ns;
+}
+
 Struct::Struct() = default;
 
 Struct::Struct(std::string name, std::vector<Variable> variables)
@@ -204,6 +272,17 @@ bool Struct::PassesSema(std::stringstream& stream) const {
     }
   }
   return true;
+}
+
+nlohmann::json::object_t Struct::GetJSONObject() const {
+  auto vars = nlohmann::json::array_t{};
+  for (const auto& var : variables_) {
+    vars.emplace_back(var.GetJSONObject());
+  }
+  nlohmann::json::object_t strut;
+  strut["name"] = name_;
+  strut["variables"] = std::move(vars);
+  return strut;
 }
 
 }  // namespace epoxy

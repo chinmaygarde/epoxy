@@ -62,6 +62,10 @@ add_parser(epoxy
     stack.hh
 )
 
+target_link_libraries(epoxy
+  inja
+)
+
 target_include_directories(epoxy
   PUBLIC
     .
@@ -71,6 +75,7 @@ target_include_directories(epoxy
 add_executable(epoxy_unittests
   driver_unittests.cc
   sema_unittests.cc
+  code_gen_unittests.cc
 )
 
 target_link_libraries(epoxy_unittests

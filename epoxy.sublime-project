@@ -5,7 +5,14 @@
       "file_regex": "([a-zA-Z/_\\.\\d+-]+):(\\d+):(\\d+): ([\\w\\s':<>,&()^*=;-]+)",
       "name": "Epoxy Build All",
       "shell": true,
-      "shell_cmd": "(mkdir -p build/clang && cmake ../.. -G Ninja && ninja && ./source/epoxy_unittests)",
+      "shell_cmd": "(cmake ../.. -G Ninja && ninja && ./source/epoxy_unittests)",
+      "working_dir": "${project_path}/build/clang"
+    },
+    {
+      "file_regex": "([a-zA-Z/_\\.\\d+-]+):(\\d+):(\\d+): ([\\w\\s':<>,&()^*=;-]+)",
+      "name": "Epoxy Build All Windows Clang",
+      "shell": true,
+      "shell_cmd": "(cmake ../.. -G Ninja && ninja && .\\source\\epoxy_unittests.exe)",
       "working_dir": "${project_path}/build/clang"
     },
   ],
