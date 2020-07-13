@@ -1,3 +1,6 @@
+// This source file is part of Epoxy licensed under the MIT License.
+// See LICENSE.md file for details.
+
 #include <gtest/gtest.h>
 
 #include "driver.h"
