@@ -29,7 +29,7 @@ if(WINDOWS)
   add_compile_definitions(YY_NO_UNISTD_H)
 endif(WINDOWS)
 
-add_library(epoxy
+add_library(epoxy_lib
   code_gen.cc
   code_gen.h
   driver.cc
@@ -43,13 +43,13 @@ add_library(epoxy
   types.h
 )
 
-add_lexer(epoxy
+add_lexer(epoxy_lib
   epoxy.l
     lexer.cc
     lexer.h
 )
 
-add_parser(epoxy
+add_parser(epoxy_lib
   epoxy.y
     location.hh
     parser.cc
@@ -58,14 +58,22 @@ add_parser(epoxy
     stack.hh
 )
 
-target_link_libraries(epoxy
+target_link_libraries(epoxy_lib
   inja
 )
 
-target_include_directories(epoxy
+target_include_directories(epoxy_lib
   PUBLIC
     .
     ${CMAKE_CURRENT_BINARY_DIR}
+)
+
+add_executable(epoxy
+  epoxy_main.cc
+)
+
+target_link_libraries(epoxy
+  epoxy_lib
 )
 
 add_executable(epoxy_unittests
@@ -75,8 +83,7 @@ add_executable(epoxy_unittests
 )
 
 target_link_libraries(epoxy_unittests
-  epoxy
+  epoxy_lib
   gtest
   gtest_main
 )
-
