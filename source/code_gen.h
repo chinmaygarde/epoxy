@@ -17,7 +17,7 @@ class CodeGen {
   };
   static std::unique_ptr<CodeGen> CreateGenerator(Type type);
 
-  CodeGen();
+  CodeGen(std::string template_data);
 
   virtual ~CodeGen();
 
@@ -26,9 +26,11 @@ class CodeGen {
     std::optional<std::string> error;
   };
 
-  virtual RenderResult Render(std::vector<Namespace> namespaces) const = 0;
+  RenderResult Render(std::vector<Namespace> namespaces) const;
 
  private:
+  std::string template_data_;
+
   EPOXY_DISALLOW_COPY_AND_ASSIGN(CodeGen);
 };
 

@@ -32,10 +32,6 @@ endif(WINDOWS)
 add_library(epoxy
   code_gen.cc
   code_gen.h
-  code_gen_cxx.cc
-  code_gen_cxx.h
-  code_gen_dart.cc
-  code_gen_dart.h
   driver.cc
   driver.h
   macros.h
