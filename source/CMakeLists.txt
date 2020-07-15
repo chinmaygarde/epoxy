@@ -32,8 +32,12 @@ endif(WINDOWS)
 add_library(epoxy_lib
   code_gen.cc
   code_gen.h
+  command_line.cc
+  command_line.h
   driver.cc
   driver.h
+  file.cc
+  file.h
   macros.h
   scanner.cc
   scanner.h
@@ -41,6 +45,7 @@ add_library(epoxy_lib
   sema.h
   types.cc
   types.h
+  version.h
 )
 
 add_lexer(epoxy_lib

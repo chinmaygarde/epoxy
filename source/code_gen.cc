@@ -60,19 +60,39 @@ CodeGen::CodeGen(std::string template_data)
 
 CodeGen::~CodeGen() = default;
 
-CodeGen::RenderResult CodeGen::Render(std::vector<Namespace> namespaces) const {
-  nlohmann::json template_data;
+CodeGen::RenderResult CodeGen::Render(
+    const std::vector<Namespace>& namespaces) const {
+  nlohmann::json ns_data;
 
   for (const auto& ns : namespaces) {
-    template_data["namespaces"].push_back(ns.GetJSONObject());
+    ns_data["namespaces"].push_back(ns.GetJSONObject());
   }
 
   try {
-    auto render = inja::render(template_data_.data(), template_data);
+    auto render = inja::render(template_data_.data(), ns_data);
     return {render, std::nullopt};
   } catch (std::exception e) {
     return {std::nullopt, e.what()};
   }
+}
+
+const char* CodeGen::GetDefaultCXXTemplate() {
+  return kCXXCodeGenTemplate;
+}
+
+const char* CodeGen::GetDefaultDartTemplate() {
+  return kDartCodeGenTemplate;
+}
+
+std::string CodeGen::GenerateTemplateDataJSON(
+    const std::vector<Namespace>& namespaces) const {
+  nlohmann::json ns_data;
+
+  for (const auto& ns : namespaces) {
+    ns_data["namespaces"].push_back(ns.GetJSONObject());
+  }
+
+  return ns_data;
 }
 
 }  // namespace epoxy

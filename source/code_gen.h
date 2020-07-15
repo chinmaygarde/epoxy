@@ -20,6 +20,10 @@ class CodeGen {
   };
   static std::unique_ptr<CodeGen> CreateGenerator(Type type);
 
+  static const char* GetDefaultCXXTemplate();
+
+  static const char* GetDefaultDartTemplate();
+
   CodeGen(std::string template_data);
 
   virtual ~CodeGen();
@@ -29,7 +33,10 @@ class CodeGen {
     std::optional<std::string> error;
   };
 
-  RenderResult Render(std::vector<Namespace> namespaces) const;
+  std::string GenerateTemplateDataJSON(
+      const std::vector<Namespace>& namespaces) const;
+
+  RenderResult Render(const std::vector<Namespace>& namespaces) const;
 
  private:
   std::string template_data_;
