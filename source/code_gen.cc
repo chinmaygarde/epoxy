@@ -81,11 +81,94 @@ static nlohmann::json CreateJSONTemplateData(
   return ns_data;
 }
 
+static std::string TypeToDartFFIType(const std::string& type) {
+  if (type == "void") {
+    return "Void";
+  }
+  if (type == "int8_t") {
+    return "Int8";
+  }
+  if (type == "int16_t") {
+    return "Int16";
+  }
+  if (type == "int32_t") {
+    return "Int32";
+  }
+  if (type == "int64_t") {
+    return "Int64";
+  }
+  if (type == "uint8_t") {
+    return "Uint8";
+  }
+  if (type == "uint16_t") {
+    return "Uint16";
+  }
+  if (type == "uint32_t") {
+    return "Uint32";
+  }
+  if (type == "uint64_t") {
+    return "Uint64";
+  }
+  if (type == "double") {
+    return "Double";
+  }
+  if (type == "float") {
+    return "Float";
+  }
+  return "unknown";
+}
+
+static std::string TypeToDartType(const std::string& type) {
+  if (type == "void") {
+    return "void";
+  }
+  if (type == "int8_t") {
+    return "int";
+  }
+  if (type == "int16_t") {
+    return "int";
+  }
+  if (type == "int32_t") {
+    return "int";
+  }
+  if (type == "int64_t") {
+    return "int";
+  }
+  if (type == "uint8_t") {
+    return "int";
+  }
+  if (type == "uint16_t") {
+    return "int";
+  }
+  if (type == "uint32_t") {
+    return "int";
+  }
+  if (type == "uint64_t") {
+    return "int";
+  }
+  if (type == "double") {
+    return "double";
+  }
+  if (type == "float") {
+    return "float";
+  }
+  return "unknown";
+}
+
 CodeGen::RenderResult CodeGen::Render(
     const std::vector<Namespace>& namespaces) const {
+  inja::Environment env;
+  env.set_trim_blocks(true);
+  env.set_lstrip_blocks(true);
+  env.add_callback("dart_ffi_type", 1u, [](inja::Arguments& args) {
+    return TypeToDartFFIType(args.at(0u)->get<std::string>());
+  });
+  env.add_callback("dart_type", 1u, [](inja::Arguments& args) {
+    return TypeToDartType(args.at(0u)->get<std::string>());
+  });
   try {
     auto render =
-        inja::render(template_data_.data(), CreateJSONTemplateData(namespaces));
+        env.render(template_data_.data(), CreateJSONTemplateData(namespaces));
     return {render, std::nullopt};
   } catch (std::exception e) {
     return {std::nullopt, e.what()};

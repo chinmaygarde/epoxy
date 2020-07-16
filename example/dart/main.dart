@@ -1,6 +1,7 @@
 import 'dart:ffi' as ffi;
 
-import 'lib/bindings.dart';
+// The bindings are generated at this spot.
+import '../../build/clang/example/gen/dart/hello.dart';
 
 main() {
   BindAll();

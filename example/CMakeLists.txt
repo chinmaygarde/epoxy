@@ -21,3 +21,9 @@ epoxy(hello
   hello.epoxy
   hello_impl.cc
 )
+
+epoxy(hello
+  dart.template.epoxy
+  hello.epoxy
+  hello.dart
+)

@@ -24,7 +24,7 @@ void* GivePointerPlease() {
   return nullptr;
 }
 
-double Multiply(double a, double b) {
+double Multiply2(double a, double b) {
   return a * b;
 }
 

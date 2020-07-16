@@ -2,22 +2,42 @@
 
 import 'dart:ffi' as ffi;
 
-{% for ns in namespaces %} // begin namespace
-{% for func in ns.functions %} // begin functions
+{% for ns in namespaces %}
 
+{% for struct in ns.structs %}
+class {{ struct.name }} extends ffi.Struct {
+{% for var in struct.variables %}
+
+@ffi.{{dart_ffi_type(var.type)}}()
+{{dart_type(var.type)}} {{var.identifier}};
+{% endfor %}
+
+}
+{% endfor %}
+
+{% for func in ns.functions %}
 typedef {{func.name}}CType = ffi.{{dart_ffi_type(func.return_type)}} Function(
-{% for arg in func.arguments%}  // begin args
-  ffi.{{dart_ffi_type(arg.type)}} {{arg.identifier}}
-{% if not loop.is_last %}, {% endif %}
-{% endfor %}  // end args
+{% for arg in func.arguments%}
+  ffi.{{dart_ffi_type(arg.type)}} {{arg.identifier}}{% if not loop.is_last %},{% endif %}
+{% endfor %}
 );
-
-typedef {{func.name}}DartType = {{dart_type(func.return_type)}} Function(
-{% for arg in func.arguments%}  // begin args
-  ffi.{{dart_ffi_type(arg.type)}} {{arg.identifier}}
-{% if not loop.is_last %}, {% endif %}
-{% endfor %}  // end args
+typedef {{func.name}}DartType = {{func.return_type}} Function(
+{% for arg in func.arguments %}
+  {{dart_type(arg.type)}} {{arg.identifier}}{% if not loop.is_last %},{% endif %}
+{% endfor %}
 );
+{{func.name}}DartType {{func.name}};
 
-{% endfor %} // end functions
-{% endfor %} // end namespaces
+
+{% endfor %}
+
+void AttachNativeBindings() {
+  final dylib = ffi.DynamicLibrary.open("{{ns.name}}.dylib");
+
+  {% for func in ns.functions %}
+  {{func.name}} = dylib.lookup<ffi.NativeFunction<{{func.name}}CType>>("{{func.name}}").asFunction();
+  {% endfor %}
+}
+
+
+{% endfor %}
