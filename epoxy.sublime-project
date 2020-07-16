@@ -12,7 +12,7 @@
 			"file_regex": "([a-zA-Z/_\\.\\d+-]+):(\\d+):(\\d+): ([\\w\\s':<>,&()^*=;-]+)",
 			"name": "Epoxy Build All Windows Clang",
 			"shell": true,
-			"shell_cmd": "(cmake ../.. -G Ninja && ninja && .\\source\\epoxy_unittests.exe && ninja -C ../examplebuild)",
+			"shell_cmd": "(cmake ../.. -G Ninja && ninja && .\\source\\epoxy_unittests.exe)",
 			"working_dir": "${project_path}/build/clang"
 		}
 	],
@@ -34,14 +34,12 @@
 				"*.h",
 				"*.c",
 				"*.hh",
-				"*.cc"
+				"*.cc",
+        "*.rule"
 			],
 			"follow_symlinks": false,
 			"name": "Build",
 			"path": "build"
-		},
-		{
-			"path": "build\\examplebuild\\gen"
 		}
 	],
 	"settings":
