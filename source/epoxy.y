@@ -65,6 +65,9 @@
   UINT_32_T               "uint32_t"
   UINT_64_T               "uint64_t"
 
+  DOUBLE                  "double"
+  FLOAT                   "float"
+
   ARROW                   "->"
   STAR                    "*"
   ;
@@ -148,6 +151,8 @@ Primitive
   | UINT_16_T  { $$ = epoxy::Primitive::kUnsignedInt16; }
   | UINT_32_T  { $$ = epoxy::Primitive::kUnsignedInt32; }
   | UINT_64_T  { $$ = epoxy::Primitive::kUnsignedInt64; }
+  | DOUBLE     { $$ = epoxy::Primitive::kDouble; }
+  | FLOAT      { $$ = epoxy::Primitive::kFloat; }
   ;
 
 %%

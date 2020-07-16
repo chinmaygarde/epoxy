@@ -48,6 +48,8 @@ WS                      [ \t\v\n\f]
 "uint16_t"             return epoxy::Parser::make_UINT_16_T(CURRENT_LOC);
 "uint32_t"             return epoxy::Parser::make_UINT_32_T(CURRENT_LOC);
 "uint64_t"             return epoxy::Parser::make_UINT_64_T(CURRENT_LOC);
+"double"               return epoxy::Parser::make_DOUBLE(CURRENT_LOC);
+"float"                return epoxy::Parser::make_FLOAT(CURRENT_LOC);
 
 ";"                    return epoxy::Parser::make_SEMI_COLON(CURRENT_LOC);
 "{"                    return epoxy::Parser::make_CURLY_LEFT(CURRENT_LOC);

@@ -19,7 +19,6 @@ include(grammar)
 detect_platform()
 
 add_subdirectory(source)
-add_subdirectory(example/hello)
 add_subdirectory(third_party/googletest EXCLUDE_FROM_ALL)
 add_subdirectory(third_party/json EXCLUDE_FROM_ALL)
 add_subdirectory(third_party/inja EXCLUDE_FROM_ALL)

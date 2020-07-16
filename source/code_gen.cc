@@ -2,8 +2,10 @@
 // See LICENSE.md file for details.
 
 #include "code_gen.h"
+#include "version.h"
 
 #include <inja.hpp>
+#include <sstream>
 
 namespace epoxy {
 
@@ -60,16 +62,30 @@ CodeGen::CodeGen(std::string template_data)
 
 CodeGen::~CodeGen() = default;
 
-CodeGen::RenderResult CodeGen::Render(
-    const std::vector<Namespace>& namespaces) const {
+static std::string GetEpoxyVersion() {
+  std::stringstream stream;
+  stream << EPOXY_VERSION_MAJOR << "." << EPOXY_VERSION_MINOR << "."
+         << EPOXY_VERSION_PATCH;
+  return stream.str();
+}
+
+static nlohmann::json CreateJSONTemplateData(
+    const std::vector<Namespace>& namespaces) {
   nlohmann::json ns_data;
+  ns_data["epoxy_version"] = GetEpoxyVersion();
 
   for (const auto& ns : namespaces) {
     ns_data["namespaces"].push_back(ns.GetJSONObject());
   }
 
+  return ns_data;
+}
+
+CodeGen::RenderResult CodeGen::Render(
+    const std::vector<Namespace>& namespaces) const {
   try {
-    auto render = inja::render(template_data_.data(), ns_data);
+    auto render =
+        inja::render(template_data_.data(), CreateJSONTemplateData(namespaces));
     return {render, std::nullopt};
   } catch (std::exception e) {
     return {std::nullopt, e.what()};
@@ -86,13 +102,7 @@ const char* CodeGen::GetDefaultDartTemplate() {
 
 std::string CodeGen::GenerateTemplateDataJSON(
     const std::vector<Namespace>& namespaces) const {
-  nlohmann::json ns_data;
-
-  for (const auto& ns : namespaces) {
-    ns_data["namespaces"].push_back(ns.GetJSONObject());
-  }
-
-  return ns_data;
+  return CreateJSONTemplateData(namespaces);
 }
 
 }  // namespace epoxy

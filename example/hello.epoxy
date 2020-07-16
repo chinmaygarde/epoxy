@@ -1,3 +1,15 @@
-namespace example {
+namespace hello {
     function SayHello() -> void;
-}
+
+    function SayHelloWithNumber(int32_t num) -> void;
+
+    function AddNumbers(int32_t a, int64_t b) -> int64_t;
+
+    function GivePointerPlease() -> void*;
+
+    function Multiply(double a, double b) -> double;
+
+    struct Hello {
+
+    }
+} // namespace hello

@@ -41,7 +41,7 @@ bool Variable::PassesSema(std::stringstream& stream) const {
 static std::string PrimitiveToTypeString(Primitive primitive) {
   switch (primitive) {
     case Primitive::kVoid:
-      return "void_t";
+      return "void";
     case Primitive::kInt8:
       return "int8_t";
     case Primitive::kInt16:
@@ -58,6 +58,10 @@ static std::string PrimitiveToTypeString(Primitive primitive) {
       return "uint32_t";
     case Primitive::kUnsignedInt64:
       return "uint64_t";
+    case Primitive::kDouble:
+      return "double";
+    case Primitive::kFloat:
+      return "float";
   };
   return "unknown";
 }

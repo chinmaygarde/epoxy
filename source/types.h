@@ -23,6 +23,8 @@ enum class Primitive {
   kUnsignedInt16,
   kUnsignedInt32,
   kUnsignedInt64,
+  kDouble,
+  kFloat,
 };
 
 class Variable {
