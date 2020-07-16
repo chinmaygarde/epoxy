@@ -1,5 +1,6 @@
 #include "command_line.h"
 
+#include <algorithm>
 #include <optional>
 
 namespace epoxy {
@@ -25,7 +26,7 @@ CommandLine::~CommandLine() = default;
 std::optional<std::string> CommandLine::GetString(
     const std::string& key) const {
   auto flag = "--" + key;
-  for (auto i = 0; i < args_.size(); i++) {
+  for (size_t i = 0; i < args_.size(); i++) {
     if (args_[i] == flag && i + 1 < args_.size()) {
       return args_[i + 1];
     }
