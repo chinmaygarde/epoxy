@@ -1,17 +1,16 @@
 namespace hello {
-  function SayHello() -> void;
-
-  function SayHelloWithNumber(int32_t some_number) -> void;
-
-  function AddNumbers(int32_t a, int64_t b) -> int64_t;
-
-  function GivePointerPlease() -> void*;
-
-  function Multiply2(double a, double b) -> double;
 
   struct Hello {
-    int32_t a;
-    double b;
-    float c;
+    int32_t val;
   }
+
+  function SayHello() -> void;
+
+  function AddNumbers(int32_t a, int64_t b, float c) -> double;
+
+  function GetIntPointer() -> int32_t *;
+
+  function GetDoublePointer() -> double *;
+
+  function AddPointerValues(int32_t* a, double *b) -> void;
 } // namespace hello

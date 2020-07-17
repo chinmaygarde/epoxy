@@ -4,6 +4,10 @@ import 'dart:ffi' as ffi;
 
 {% for ns in namespaces %}
 
+{#
+   Struct Definitions.
+#}
+
 {% for struct in ns.structs %}
 class {{ struct.name }} extends ffi.Struct {
 {% for var in struct.variables %}
@@ -13,17 +17,56 @@ class {{ struct.name }} extends ffi.Struct {
 {% endfor %}
 
 }
+
+
+{# Struct lifecycle prototypes. #}
+typedef {{struct.name}}CreateType = ffi.Pointer<{{struct.name}}> Function();
+typedef {{struct.name}}DestroyType = void Function(ffi.Pointer<{{struct.name}}>);
+
+{{struct.name}}CreateType {{struct.name}}Create;
+{{struct.name}}DestroyType {{struct.name}}Destroy;
+
 {% endfor %}
 
+{#
+   Function Definitions.
+#}
+
+{# Typedef for the native function #}
 {% for func in ns.functions %}
-typedef {{func.name}}CType = ffi.{{dart_ffi_type(func.return_type)}} Function(
+typedef {{func.name}}CType =
+{% if func.pointer_return %}
+ffi.Pointer<ffi.{{dart_ffi_type(func.return_type)}}>
+{% else %}
+ffi.{{dart_ffi_type(func.return_type)}}
+{% endif %}
+Function(
 {% for arg in func.arguments%}
-  ffi.{{dart_ffi_type(arg.type)}} {{arg.identifier}}{% if not loop.is_last %},{% endif %}
+{% if arg.is_pointer %}
+ffi.Pointer<ffi.{{dart_ffi_type(arg.type)}}>
+{% else %}
+ffi.{{dart_ffi_type(arg.type)}}
+{% endif %}
+{{arg.identifier}}{% if not loop.is_last %},{% endif %}
 {% endfor %}
 );
-typedef {{func.name}}DartType = {{func.return_type}} Function(
+
+{# Typedef for the Dart function #}
+typedef {{func.name}}DartType =
+{% if func.pointer_return %}
+ffi.Pointer<ffi.{{dart_ffi_type(func.return_type)}}>
+{% else %}
+{{dart_type(func.return_type)}}
+{% endif %}
+Function(
 {% for arg in func.arguments %}
-  {{dart_type(arg.type)}} {{arg.identifier}}{% if not loop.is_last %},{% endif %}
+{% if arg.is_pointer %}
+  ffi.Pointer<ffi.{{dart_ffi_type(arg.type)}}>
+{% else %}
+  {{dart_type(arg.type)}}
+{% endif %}
+{{arg.identifier}}
+{% if not loop.is_last %},{% endif %}
 {% endfor %}
 );
 {{func.name}}DartType {{func.name}};
@@ -31,13 +74,26 @@ typedef {{func.name}}DartType = {{func.return_type}} Function(
 
 {% endfor %}
 
+{#
+   Dylib Binding Routine.
+#}
+// This method must be called once upfront before using any of the methods in the {{ns.name}} namespace.
 void AttachNativeBindings() {
-  final dylib = ffi.DynamicLibrary.open("{{ns.name}}.dylib");
+  // Open the {{ns.name}} dylib to look for native functions.
+  final dylib = ffi.DynamicLibrary.open("example/{{ns.name}}.dll");
 
+  {# Bind standalone functions. #}
+  // Bind standalone functions
   {% for func in ns.functions %}
   {{func.name}} = dylib.lookup<ffi.NativeFunction<{{func.name}}CType>>("{{func.name}}").asFunction();
   {% endfor %}
-}
 
+  {# Bind struct lifecycle functions. #}
+  // Bind functions that manage the lifecycles of native objects.
+  {% for struct in ns.structs %}
+  {{struct.name}}Create = dylib.lookup<ffi.NativeFunction<{{struct.name}}CreateType>>("{{struct.name}}Create").asFunction();
+  {{struct.name}}Destroy = dylib.lookup<ffi.NativeFunction<{{struct.name}}DestroyType>>("{{struct.name}}Destroy").asFunction();
+  {% endfor %}
+}
 
 {% endfor %}

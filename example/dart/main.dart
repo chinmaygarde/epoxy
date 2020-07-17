@@ -1,10 +1,11 @@
-import 'dart:ffi' as ffi;
-
-// The bindings are generated at this spot.
-import '../../build/clang/example/gen/dart/hello.dart';
+import '../../build/clang/example/gen/hello.dart';
 
 main() {
-  BindAll();
-  SaySomething();
-  print(Sum(10, 65));
+  AttachNativeBindings();
+  SayHello();
+  print(AddNumbers(12, 14, 10.0));
+  AddPointerValues(GetIntPointer(), GetDoublePointer());
+
+  var hello = HelloCreate();
+  print(hello.ref.val);
 }

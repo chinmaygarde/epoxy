@@ -150,7 +150,7 @@ static std::string TypeToDartType(const std::string& type) {
     return "double";
   }
   if (type == "float") {
-    return "float";
+    return "double";
   }
   return "unknown";
 }

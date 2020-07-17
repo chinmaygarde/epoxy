@@ -9,31 +9,36 @@
 namespace hello {
 
 void SayHello() {
-  std::cout << "Hello" << std::endl;
+  std::cout << "Hello from native code!" << std::endl;
 }
 
-void SayHelloWithNumber(int32_t num) {
-  std::cout << "Hello  " << num << std::endl;
+double AddNumbers(int32_t a, int64_t b, float c) {
+  return a + b + c;
 }
 
-int64_t AddNumbers(int32_t a, int64_t b) {
-  return a + b;
+int32_t* GetIntPointer() {
+  static int32_t some_int = 123;
+  return &some_int;
 }
 
-void* GivePointerPlease() {
-  return nullptr;
+double* GetDoublePointer() {
+  static double some_double = 456.0;
+  return &some_double;
 }
 
-double Multiply2(double a, double b) {
-  return a * b;
+void AddPointerValues(int32_t* a, double* b) {
+  const auto value = *a + *b;
+  std::cout << "The values added up are " << value << std::endl;
 }
 
 Hello* HelloCreate() {
-  return new Hello();
+  auto hello = new Hello();
+  hello->val = 42;
+  return hello;
 }
 
-void HelloDestroy(Hello* hello) {
-  delete hello;
+void HelloDestroy(Hello* object) {
+  delete object;
 }
 
 }  // namespace hello

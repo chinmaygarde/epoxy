@@ -2,11 +2,13 @@
 #pragma once
 
 #include <cstdint>
-
 {% for ns in namespaces %}
 
 namespace {{ ns.name }} {
 
+{#
+    Struct Definitions.
+#}
 {% for struct in ns.structs %}
 typedef struct _{{ struct.name }} {
 {% for var in struct.variables %}
@@ -14,20 +16,25 @@ typedef struct _{{ struct.name }} {
 {% endfor %}
 } {{ struct.name }};
 
+{#
+    Struct lifecycle management functions.
+#}
 {{ struct.name }}* {{struct.name}}Create();
 
 void {{struct.name}}Destroy({{struct.name}}* object);
 {% endfor %}
 
-
+{#
+    Function Definitions
+#}
 {% for func in ns.functions %}
 {{func.return_type}}{% if func.pointer_return %}*{% endif %} {{func.name}}(
 {% for arg in func.arguments %}
-  {{arg.type}}{% if arg.is_pointer %}*{% endif %} {{ arg.identifier }} {% if not loop.is_last %}, {% endif %}
+ {{arg.type}}{% if arg.is_pointer %}*{% endif %} {{ arg.identifier }} {% if not loop.is_last %},{% endif %}
 {% endfor %}
 );
-{% endfor %}
 
+{% endfor %}
 } // namespace {{ ns.name }}
 
 {% endfor %}
