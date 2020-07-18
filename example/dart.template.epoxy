@@ -11,9 +11,14 @@ import 'dart:ffi' as ffi;
 {% for struct in ns.structs %}
 class {{ struct.name }} extends ffi.Struct {
 {% for var in struct.variables %}
-
+{% if var.is_pointer %}
+ffi.Pointer<ffi.{{dart_ffi_type(var.type)}}> {{var.identifier}};
+{% else %}
 @ffi.{{dart_ffi_type(var.type)}}()
 {{dart_type(var.type)}} {{var.identifier}};
+{% endif %}
+
+
 {% endfor %}
 
 }

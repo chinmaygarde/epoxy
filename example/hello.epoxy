@@ -2,6 +2,7 @@ namespace hello {
 
   struct Hello {
     int32_t val;
+    uint8_t * string;
   }
 
   function SayHello() -> void;

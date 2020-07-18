@@ -5,6 +5,69 @@ Epoxy
 
 This is just an experiment. Nothing to see here yet.
 
+Epoxy IDL Manual
+----------------
+
+The Epoxy interface definition can be contained in any file but is typically present in a file with the `.epoxy` suffix.
+
+Namespace
+=========
+
+Each Epoxy interface definition file must contain one or more namespaces. Namespaces are used to organize the structs and function within the interface definition file.
+
+```
+namespace hello {
+
+} // namespace foo
+```
+
+Primitives
+==========
+
+The following primitives may be specified directly in an Epoxy definition file.
+
+* `int8_t`: A signed 8-bit integer.
+* `int16_t`: A signed 16-bit integer.
+* `int32_t`: A signed 32-bit integer.
+* `int64_t`: A signed 64-bit integer.
+* `uint8_t`: An unsigned 8-bit integer.
+* `uint16_t`: An unsigned 16-bit integer.
+* `uint32_t`: An unsigned 32-bit integer.
+* `uint64_t`: An unsigned 64-bit integer.
+* `double`: A 64-bit double.
+* `float`: A 32-bit float.
+
+Pointer
+=======
+
+Pointers to primitive values or structs may be specifed by appending `*`.
+
+```
+function GiveIntPointer() -> int8_t*;
+```
+
+Structs
+=======
+
+Within a namespace, there may be one or more `struct` definitions.
+
+```
+struct Hello {
+  int8_t some_int;
+  double some_double;
+  int64_t *pointer_to_some_64_bit_int;
+}
+```
+
+Functions
+=========
+
+Zero or more functions may appear anywhere in a `namespace` definition.
+
+```
+function AddTwoNumbers(int64_t a, int64_t b) -> int64_t;
+```
+
 
 Build Requirements
 ------------------
