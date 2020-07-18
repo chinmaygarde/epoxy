@@ -1,17 +1,14 @@
-Epoxy
------
+# Epoxy
 
 ![CMake Build and Test](https://github.com/chinmaygarde/epoxy/workflows/CMake%20Build%20and%20Test/badge.svg)
 
 This is just an experiment. Nothing to see here yet.
 
-Epoxy IDL Manual
-----------------
+# IDL Manual
 
 The Epoxy interface definition can be contained in any file but is typically present in a file with the `.epoxy` suffix.
 
-Namespace
-=========
+## Namespaces
 
 Each Epoxy interface definition file must contain one or more namespaces. Namespaces are used to organize the structs and function within the interface definition file.
 
@@ -21,8 +18,7 @@ namespace hello {
 } // namespace foo
 ```
 
-Primitives
-==========
+## Primitives
 
 The following primitives may be specified directly in an Epoxy definition file.
 
@@ -37,8 +33,7 @@ The following primitives may be specified directly in an Epoxy definition file.
 * `double`: A 64-bit double.
 * `float`: A 32-bit float.
 
-Pointer
-=======
+## Pointer
 
 Pointers to primitive values or structs may be specifed by appending `*`.
 
@@ -46,8 +41,7 @@ Pointers to primitive values or structs may be specifed by appending `*`.
 function GiveIntPointer() -> int8_t*;
 ```
 
-Structs
-=======
+## Structs
 
 Within a namespace, there may be one or more `struct` definitions.
 
@@ -59,8 +53,7 @@ struct Hello {
 }
 ```
 
-Functions
-=========
+## Functions
 
 Zero or more functions may appear anywhere in a `namespace` definition.
 
@@ -69,8 +62,7 @@ function AddTwoNumbers(int64_t a, int64_t b) -> int64_t;
 ```
 
 
-Build Requirements
-------------------
+# Build Requirements
 
 This project can be compiled on Windows, Linux, or, Mac. On the host, the follow dependencies are required. The `Dockerfile` provided in the project root may also be used to construct an image capable of building this project.
 
