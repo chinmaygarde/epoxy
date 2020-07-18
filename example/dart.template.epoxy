@@ -21,6 +21,7 @@ class {{ struct.name }} extends ffi.Struct {
 
 {# Struct lifecycle prototypes. #}
 typedef {{struct.name}}CreateType = ffi.Pointer<{{struct.name}}> Function();
+typedef {{struct.name}}DestroyCType = ffi.Void Function(ffi.Pointer<{{struct.name}}>);
 typedef {{struct.name}}DestroyType = void Function(ffi.Pointer<{{struct.name}}>);
 
 {{struct.name}}CreateType {{struct.name}}Create;
@@ -92,7 +93,7 @@ void AttachNativeBindings() {
   // Bind functions that manage the lifecycles of native objects.
   {% for struct in ns.structs %}
   {{struct.name}}Create = dylib.lookup<ffi.NativeFunction<{{struct.name}}CreateType>>("{{struct.name}}Create").asFunction();
-  {{struct.name}}Destroy = dylib.lookup<ffi.NativeFunction<{{struct.name}}DestroyType>>("{{struct.name}}Destroy").asFunction();
+  {{struct.name}}Destroy = dylib.lookup<ffi.NativeFunction<{{struct.name}}DestroyCType>>("{{struct.name}}Destroy").asFunction();
   {% endfor %}
 }
 

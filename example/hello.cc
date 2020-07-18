@@ -34,10 +34,12 @@ void AddPointerValues(int32_t* a, double* b) {
 Hello* HelloCreate() {
   auto hello = new Hello();
   hello->val = 42;
+  std::cout << "Create Hello." << std::endl;
   return hello;
 }
 
 void HelloDestroy(Hello* object) {
+  std::cout << "Destroy Hello." << std::endl;
   delete object;
 }
 
