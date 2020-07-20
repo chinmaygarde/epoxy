@@ -68,7 +68,9 @@ ffi.{{dart_ffi_type(func.return_type)}}
 {% endif %}
 Function(
 {% for arg in func.arguments%}
-{% if arg.is_pointer %}
+{% if arg.is_enum %}
+ffi.Uint64
+{% else if arg.is_pointer %}
 ffi.Pointer<ffi.{{dart_ffi_type(arg.type)}}>
 {% else %}
 ffi.{{dart_ffi_type(arg.type)}}
@@ -86,7 +88,9 @@ ffi.Pointer<ffi.{{dart_ffi_type(func.return_type)}}>
 {% endif %}
 Function(
 {% for arg in func.arguments %}
-{% if arg.is_pointer %}
+{% if arg.is_enum %}
+  int
+{% else if arg.is_pointer %}
   ffi.Pointer<ffi.{{dart_ffi_type(arg.type)}}>
 {% else %}
   {{dart_type(arg.type)}}

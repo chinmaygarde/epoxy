@@ -51,4 +51,6 @@ void GoodbyeDestroy(Goodbye* object) {
   delete object;
 }
 
+void TakeEnumValue(HelloEnum val) {}
+
 }  // namespace hello

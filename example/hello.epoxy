@@ -29,5 +29,7 @@ struct Goodbye {
 
 }
 
+function TakeEnumValue(HelloEnum val) -> void;
+
 } // namespace hello
 
