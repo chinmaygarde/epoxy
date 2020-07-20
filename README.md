@@ -37,12 +37,20 @@ The following primitives may be specified directly in an Epoxy definition file.
 
 Pointers to primitive values or structs may be specifed by appending `*`.
 
+```
+function GiveIntPointer() -> int8_t*;
+```
+
 ## Enums
 
 Specify Enums just like you would in C/C++. Across a namespace, the enum or struct names may not be repeated.
 
 ```
-function GiveIntPointer() -> int8_t*;
+enum MyEnum {
+  Tinker,
+  Tailor,
+  Soldier,
+}
 ```
 
 ## Structs
