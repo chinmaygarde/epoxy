@@ -19,6 +19,7 @@ Sema::Result Sema::Perform(std::vector<Namespace> namespaces_vector) {
     namespaces[ns.GetName()].SetName(ns.GetName());
     namespaces[ns.GetName()].AddFunctions(ns.GetFunctions());
     namespaces[ns.GetName()].AddStructs(ns.GetStructs());
+    namespaces[ns.GetName()].AddEnums(ns.GetEnums());
   }
 
   for (const auto& ns : namespaces) {

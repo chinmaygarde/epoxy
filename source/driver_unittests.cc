@@ -518,5 +518,79 @@ TEST(DriverTest, CanParseVoidAndVoidPointer) {
   ASSERT_TRUE(driver.GetNamespaces()[0].GetFunctions()[1].ReturnsPointer());
 }
 
+TEST(DriverTest, CanParseEnums) {
+  Driver driver;
+  auto result = driver.Parse(R"~(
+
+    namespace foo {
+      enum EmptyEnum {
+
+      }
+
+      enum JustOneMember {
+       OneMember
+      }
+
+      enum SomeMoreMembers {
+       Tinker,
+       Tailor,
+       Soldier,
+       Sailor,
+       RichMan,
+       PoorMan,
+       BeggarMan,
+       Spy,
+      }
+
+      enum SomeMoreMembers2 {
+       Tinker,
+       Tailor,
+       Soldier,
+       Sailor,
+       RichMan,
+       PoorMan,
+       BeggarMan,
+       Spy
+      }
+
+    }
+
+    )~");
+
+  driver.PrettyPrintErrors(std::cerr);
+  ASSERT_EQ(result, Driver::ParserResult::kSuccess);
+  ASSERT_EQ(driver.GetNamespaces().size(), 1u);
+  ASSERT_EQ(driver.GetNamespaces()[0].GetEnums().size(), 4u);
+  ASSERT_EQ(driver.GetNamespaces()[0].GetEnums()[0].GetName(), "EmptyEnum");
+  ASSERT_EQ(driver.GetNamespaces()[0].GetEnums()[1].GetName(), "JustOneMember");
+  ASSERT_EQ(driver.GetNamespaces()[0].GetEnums()[1].GetMembers().size(), 1u);
+  ASSERT_EQ(driver.GetNamespaces()[0].GetEnums()[1].GetMembers()[0],
+            "OneMember");
+  ASSERT_EQ(driver.GetNamespaces()[0].GetEnums()[2].GetName(),
+            "SomeMoreMembers");
+  ASSERT_EQ(driver.GetNamespaces()[0].GetEnums()[2].GetMembers().size(), 8u);
+  ASSERT_EQ(driver.GetNamespaces()[0].GetEnums()[2].GetMembers()[0], "Tinker");
+  ASSERT_EQ(driver.GetNamespaces()[0].GetEnums()[2].GetMembers()[1], "Tailor");
+  ASSERT_EQ(driver.GetNamespaces()[0].GetEnums()[2].GetMembers()[2], "Soldier");
+  ASSERT_EQ(driver.GetNamespaces()[0].GetEnums()[2].GetMembers()[3], "Sailor");
+  ASSERT_EQ(driver.GetNamespaces()[0].GetEnums()[2].GetMembers()[4], "RichMan");
+  ASSERT_EQ(driver.GetNamespaces()[0].GetEnums()[2].GetMembers()[5], "PoorMan");
+  ASSERT_EQ(driver.GetNamespaces()[0].GetEnums()[2].GetMembers()[6],
+            "BeggarMan");
+  ASSERT_EQ(driver.GetNamespaces()[0].GetEnums()[2].GetMembers()[7], "Spy");
+  ASSERT_EQ(driver.GetNamespaces()[0].GetEnums()[3].GetName(),
+            "SomeMoreMembers2");
+  ASSERT_EQ(driver.GetNamespaces()[0].GetEnums()[3].GetMembers().size(), 8u);
+  ASSERT_EQ(driver.GetNamespaces()[0].GetEnums()[3].GetMembers()[0], "Tinker");
+  ASSERT_EQ(driver.GetNamespaces()[0].GetEnums()[3].GetMembers()[1], "Tailor");
+  ASSERT_EQ(driver.GetNamespaces()[0].GetEnums()[3].GetMembers()[2], "Soldier");
+  ASSERT_EQ(driver.GetNamespaces()[0].GetEnums()[3].GetMembers()[3], "Sailor");
+  ASSERT_EQ(driver.GetNamespaces()[0].GetEnums()[3].GetMembers()[4], "RichMan");
+  ASSERT_EQ(driver.GetNamespaces()[0].GetEnums()[3].GetMembers()[5], "PoorMan");
+  ASSERT_EQ(driver.GetNamespaces()[0].GetEnums()[3].GetMembers()[6],
+            "BeggarMan");
+  ASSERT_EQ(driver.GetNamespaces()[0].GetEnums()[3].GetMembers()[7], "Spy");
+}
+
 }  // namespace testing
 }  // namespace epoxy

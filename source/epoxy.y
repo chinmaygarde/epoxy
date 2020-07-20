@@ -43,6 +43,7 @@
   CLASS                   "class"
   STRUCT                  "struct"
   FUNCTION                "function"
+  ENUM                    "enum"
 
   INVALID_TOKEN           "<invalid token>"
 
@@ -84,6 +85,8 @@
 %type <std::vector<epoxy::Variable>> VariableList
 %type <epoxy::Primitive> Primitive
 %type <epoxy::Struct> Struct
+%type <epoxy::Enum> Enum
+%type <std::vector<std::string>> IdentifierList
 
 %start SourceFile
 
@@ -112,6 +115,19 @@ NamespaceItems
 NamespaceItem
   : Function  { $$ = $1; }
   | Struct    { $$ = $1; }
+  | Enum      { $$ = $1; }
+  ;
+
+Enum
+  : ENUM IDENTIFIER CURLY_LEFT                CURLY_RIGHT { $$ = epoxy::Enum{$2, {}}; }
+  | ENUM IDENTIFIER CURLY_LEFT IdentifierList CURLY_RIGHT { $$ = epoxy::Enum{$2, $4}; }
+  ;
+
+IdentifierList
+  : IDENTIFIER COMMA                       { $$ = {$1}; }
+  | IDENTIFIER                             { $$ = {$1}; }
+  | IdentifierList IDENTIFIER COMMA        { $$ = $1; $$.push_back($2); }
+  | IdentifierList IDENTIFIER              { $$ = $1; $$.push_back($2); }
   ;
 
 Function

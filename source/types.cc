@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <iterator>
+#include <map>
 #include <set>
 
 namespace epoxy {
@@ -140,6 +141,10 @@ Namespace::Namespace(std::string name, NamespaceItems items)
     if (auto struct_item = std::get_if<Struct>(&item)) {
       structs_.push_back(*struct_item);
     }
+
+    if (auto enum_item = std::get_if<Enum>(&item)) {
+      enums_.push_back(*enum_item);
+    }
   }
 }
 
@@ -161,6 +166,10 @@ const std::vector<Struct>& Namespace::GetStructs() const {
   return structs_;
 }
 
+const std::vector<Enum>& Namespace::GetEnums() const {
+  return enums_;
+}
+
 void Namespace::AddFunctions(const std::vector<Function>& functions) {
   std::copy(functions.cbegin(), functions.cend(),
             std::back_inserter(functions_));
@@ -170,7 +179,11 @@ void Namespace::AddStructs(const std::vector<Struct>& structs) {
   std::copy(structs.cbegin(), structs.cend(), std::back_inserter(structs_));
 }
 
-bool Namespace::HasDuplicateFunctions(std::stringstream& stream) const {
+void Namespace::AddEnums(const std::vector<Enum>& enums) {
+  std::copy(enums.cbegin(), enums.cend(), std::back_inserter(enums_));
+}
+
+bool Namespace::CheckDuplicateFunctions(std::stringstream& stream) const {
   std::set<std::string> function_names;
   for (const auto& function : functions_) {
     const auto& function_name = function.GetName();
@@ -186,16 +199,17 @@ bool Namespace::HasDuplicateFunctions(std::stringstream& stream) const {
   return true;
 }
 
-bool Namespace::HasDuplicateStructs(std::stringstream& stream) const {
-  std::set<std::string> struct_names;
-  for (const auto& strut : structs_) {
-    const auto& struct_name = strut.GetName();
-    auto found = struct_names.find(struct_name);
-    if (found == struct_names.end()) {
-      struct_names.insert(struct_name);
-    } else {
-      stream << "Duplicate struct '" << struct_name << "' in namespace '"
-             << name_ << "'" << std::endl;
+bool Namespace::CheckStructEnumNameCollisions(std::stringstream& stream) const {
+  std::map<std::string, size_t> name_counts;
+  auto count_fn = [&](const std::string& name) -> void { name_counts[name]++; };
+  std::for_each(structs_.begin(), structs_.end(),
+                [&](const auto& str) { count_fn(str.GetName()); });
+  std::for_each(enums_.begin(), enums_.end(),
+                [&](const auto& enm) { count_fn(enm.GetName()); });
+  for (const auto& count : name_counts) {
+    if (count.second > 1) {
+      stream << "Struct or enum named " << count.first
+             << " declared more than once." << std::endl;
       return false;
     }
   }
@@ -203,11 +217,11 @@ bool Namespace::HasDuplicateStructs(std::stringstream& stream) const {
 }
 
 bool Namespace::PassesSema(std::stringstream& stream) const {
-  if (!HasDuplicateFunctions(stream)) {
+  if (!CheckDuplicateFunctions(stream)) {
     return false;
   }
 
-  if (!HasDuplicateStructs(stream)) {
+  if (!CheckStructEnumNameCollisions(stream)) {
     return false;
   }
 
@@ -223,6 +237,12 @@ bool Namespace::PassesSema(std::stringstream& stream) const {
     }
   }
 
+  for (const auto& enumm : enums_) {
+    if (!enumm.PassesSema(stream)) {
+      return false;
+    }
+  }
+
   return true;
 }
 
@@ -231,6 +251,7 @@ nlohmann::json::object_t Namespace::GetJSONObject() const {
 
   auto structs = nlohmann::json::array_t{};
   auto funcs = nlohmann::json::array_t{};
+  auto enums = nlohmann::json::array_t{};
 
   for (const auto& str : structs_) {
     structs.emplace_back(str.GetJSONObject());
@@ -240,9 +261,15 @@ nlohmann::json::object_t Namespace::GetJSONObject() const {
     funcs.emplace_back(fun.GetJSONObject());
   }
 
+  for (const auto& enumm : enums_) {
+    enums.emplace_back(enumm.GetJSONObject());
+  }
+
   ns["name"] = name_;
   ns["functions"] = std::move(funcs);
   ns["structs"] = std::move(structs);
+  ns["enums"] = std::move(enums);
+
   return ns;
 }
 
@@ -290,6 +317,48 @@ nlohmann::json::object_t Struct::GetJSONObject() const {
   strut["name"] = name_;
   strut["variables"] = std::move(vars);
   return strut;
+}
+
+Enum::Enum() = default;
+
+Enum::Enum(std::string name, std::vector<std::string> members)
+    : name_(std::move(name)), members_(std::move(members)) {}
+
+Enum::~Enum() = default;
+
+const std::string& Enum::GetName() const {
+  return name_;
+}
+
+const std::vector<std::string>& Enum::GetMembers() const {
+  return members_;
+}
+
+bool Enum::PassesSema(std::stringstream& stream) const {
+  std::map<std::string, size_t> member_counts;
+  for (const auto& member : members_) {
+    member_counts[member]++;
+  }
+
+  for (const auto& count : member_counts) {
+    if (count.second > 1) {
+      stream << "Enum " << name_ << " has duplicate member " << count.first;
+      return false;
+    }
+  }
+  return true;
+}
+
+nlohmann::json::object_t Enum::GetJSONObject() const {
+  auto members = nlohmann::json::array_t{};
+  for (const auto& member : members_) {
+    members.push_back(member);
+  }
+
+  nlohmann::json::object_t enumm;
+  enumm["name"] = name_;
+  enumm["members"] = std::move(members);
+  return enumm;
 }
 
 }  // namespace epoxy

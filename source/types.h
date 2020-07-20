@@ -102,7 +102,28 @@ class Struct {
   std::vector<Variable> variables_;
 };
 
-using NamespaceItem = std::variant<Function, Struct>;
+class Enum {
+ public:
+  Enum();
+
+  Enum(std::string name, std::vector<std::string> members);
+
+  ~Enum();
+
+  const std::string& GetName() const;
+
+  const std::vector<std::string>& GetMembers() const;
+
+  bool PassesSema(std::stringstream& stream) const;
+
+  nlohmann::json::object_t GetJSONObject() const;
+
+ private:
+  std::string name_;
+  std::vector<std::string> members_;
+};
+
+using NamespaceItem = std::variant<Function, Struct, Enum>;
 using NamespaceItems = std::vector<NamespaceItem>;
 
 class Namespace {
@@ -121,9 +142,13 @@ class Namespace {
 
   const std::vector<Struct>& GetStructs() const;
 
+  const std::vector<Enum>& GetEnums() const;
+
   void AddFunctions(const std::vector<Function>& functions);
 
   void AddStructs(const std::vector<Struct>& structs);
+
+  void AddEnums(const std::vector<Enum>& enums);
 
   bool PassesSema(std::stringstream& stream) const;
 
@@ -133,10 +158,11 @@ class Namespace {
   std::string name_;
   std::vector<Function> functions_;
   std::vector<Struct> structs_;
+  std::vector<Enum> enums_;
 
-  bool HasDuplicateFunctions(std::stringstream& stream) const;
+  bool CheckDuplicateFunctions(std::stringstream& stream) const;
 
-  bool HasDuplicateStructs(std::stringstream& stream) const;
+  bool CheckStructEnumNameCollisions(std::stringstream& stream) const;
 };
 
 }  // namespace epoxy

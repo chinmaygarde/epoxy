@@ -36,6 +36,7 @@ WS                      [ \t\v\n\f]
 
 "namespace"            return epoxy::Parser::make_NAMESPACE(CURRENT_LOC);
 "class"                return epoxy::Parser::make_CLASS(CURRENT_LOC);
+"enum"                 return epoxy::Parser::make_ENUM(CURRENT_LOC);
 "struct"               return epoxy::Parser::make_STRUCT(CURRENT_LOC);
 "function"             return epoxy::Parser::make_FUNCTION(CURRENT_LOC);
 

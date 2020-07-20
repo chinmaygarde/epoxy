@@ -33,9 +33,13 @@ The following primitives may be specified directly in an Epoxy definition file.
 * `double`: A 64-bit double.
 * `float`: A 32-bit float.
 
-## Pointer
+## Pointers
 
 Pointers to primitive values or structs may be specifed by appending `*`.
+
+## Enums
+
+Specify Enums just like you would in C/C++. Across a namespace, the enum or struct names may not be repeated.
 
 ```
 function GiveIntPointer() -> int8_t*;
@@ -43,7 +47,7 @@ function GiveIntPointer() -> int8_t*;
 
 ## Structs
 
-Within a namespace, there may be one or more `struct` definitions.
+Within a namespace, there may be one or more `struct` definitions. Across a namespace, the enum or struct names may not be repeated.
 
 ```
 struct Hello {
@@ -55,7 +59,7 @@ struct Hello {
 
 ## Functions
 
-Zero or more functions may appear anywhere in a `namespace` definition.
+Zero or more functions may appear anywhere in a `namespace` definition. . Across a namespace, function names may not be repeated.
 
 ```
 function AddTwoNumbers(int64_t a, int64_t b) -> int64_t;

@@ -52,5 +52,43 @@ TEST(SemaTest, NonPointerVoidMemberIsError) {
   ASSERT_EQ(result, Sema::Result::kError);
 }
 
+TEST(SemaTest, EnumCannotHaveDuplicateMembers) {
+  Driver driver;
+  auto driver_result = driver.Parse(R"~(
+    namespace foo {
+      enum Foo {
+        SomeMember,
+        SomeMember,
+      }
+    }
+  )~");
+  driver.PrettyPrintErrors(std::cerr);
+  ASSERT_EQ(driver_result, Driver::ParserResult::kSuccess);
+  Sema sema;
+  auto result = sema.Perform(driver.GetNamespaces());
+  sema.PrettyPrintErrors(std::cerr);
+  ASSERT_EQ(result, Sema::Result::kError);
+}
+
+TEST(SemaTest, StructsAndEnumNamesCannotCollide) {
+  Driver driver;
+  auto driver_result = driver.Parse(R"~(
+    namespace foo {
+      enum Foo {
+
+      }
+      struct Foo {
+
+      }
+    }
+  )~");
+  driver.PrettyPrintErrors(std::cerr);
+  ASSERT_EQ(driver_result, Driver::ParserResult::kSuccess);
+  Sema sema;
+  auto result = sema.Perform(driver.GetNamespaces());
+  sema.PrettyPrintErrors(std::cerr);
+  ASSERT_EQ(result, Sema::Result::kError);
+}
+
 }  // namespace testing
 }  // namespace epoxy
