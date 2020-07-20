@@ -204,7 +204,8 @@ bool Main(const CommandLine& args) {
   Sema sema;
   const auto sema_result = sema.Perform(driver.GetNamespaces());
   if (sema_result != Sema::Result::kSuccess) {
-    std::cerr << "Errors in IDL: " << std::endl;
+    std::cerr << "Errors in interface definition: ";
+    sema.PrettyPrintErrors(std::cerr);
     return false;
   }
 

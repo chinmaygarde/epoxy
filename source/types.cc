@@ -106,15 +106,21 @@ static std::string PrimitiveToTypeString(Primitive primitive) {
   return "unknown";
 }
 
-nlohmann::json::object_t Variable::GetJSONObject() const {
+nlohmann::json::object_t Variable::GetJSONObject(const Namespace& ns) const {
   nlohmann::json::object_t var;
 
   if (auto primitive = GetPrimitive(); primitive.has_value()) {
     var["type"] = PrimitiveToTypeString(primitive.value());
+    var["is_enum"] = false;
+    var["is_struct"] = false;
+    var["is_primitive"] = true;
   }
 
   if (auto user_type = GetUserDefinedType(); user_type.has_value()) {
     var["type"] = user_type.value();
+    var["is_enum"] = ns.HasEnumNamed(user_type.value());
+    var["is_struct"] = ns.HasStructNamed(user_type.value());
+    var["is_primitive"] = false;
   }
 
   var["identifier"] = identifier_;
@@ -161,11 +167,11 @@ bool Function::PassesSema(const Namespace& ns,
   return true;
 }
 
-nlohmann::json::object_t Function::GetJSONObject() const {
+nlohmann::json::object_t Function::GetJSONObject(const Namespace& ns) const {
   auto args = nlohmann::json::array_t{};
 
   for (const auto& arg : arguments_) {
-    args.emplace_back(arg.GetJSONObject());
+    args.emplace_back(arg.GetJSONObject(ns));
   }
 
   nlohmann::json::object_t fun;
@@ -314,11 +320,11 @@ nlohmann::json::object_t Namespace::GetJSONObject() const {
   auto enums = nlohmann::json::array_t{};
 
   for (const auto& str : structs_) {
-    structs.emplace_back(str.GetJSONObject());
+    structs.emplace_back(str.GetJSONObject(*this));
   }
 
   for (const auto& fun : functions_) {
-    funcs.emplace_back(fun.GetJSONObject());
+    funcs.emplace_back(fun.GetJSONObject(*this));
   }
 
   for (const auto& enumm : enums_) {
@@ -368,10 +374,10 @@ bool Struct::PassesSema(const Namespace& ns, std::stringstream& stream) const {
   return true;
 }
 
-nlohmann::json::object_t Struct::GetJSONObject() const {
+nlohmann::json::object_t Struct::GetJSONObject(const Namespace& ns) const {
   auto vars = nlohmann::json::array_t{};
   for (const auto& var : variables_) {
-    vars.emplace_back(var.GetJSONObject());
+    vars.emplace_back(var.GetJSONObject(ns));
   }
   nlohmann::json::object_t strut;
   strut["name"] = name_;

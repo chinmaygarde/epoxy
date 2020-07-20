@@ -18,6 +18,13 @@ enum class {{ enum.name }} : uint64_t {
 {% endfor %}
 
 {#
+    Struct Forward Decls.
+#}
+{% for struct in ns.structs %}
+struct {{ struct.name }};
+{% endfor %}
+
+{#
     Struct Definitions.
 #}
 {% for struct in ns.structs %}

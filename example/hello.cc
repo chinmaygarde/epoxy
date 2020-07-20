@@ -43,4 +43,12 @@ void HelloDestroy(Hello* object) {
   delete object;
 }
 
+Goodbye* GoodbyeCreate() {
+  return new Goodbye();
+}
+
+void GoodbyeDestroy(Goodbye* object) {
+  delete object;
+}
+
 }  // namespace hello

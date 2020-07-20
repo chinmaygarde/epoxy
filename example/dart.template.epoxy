@@ -14,6 +14,7 @@ enum {{ enum.name }} {
   {{ member }},
 {% endfor %}
 } //  {{ enum.name }}
+
 {% endfor %}
 
 {#
@@ -24,7 +25,16 @@ enum {{ enum.name }} {
 class {{ struct.name }} extends ffi.Struct {
 {% for var in struct.variables %}
 
-{% if var.is_pointer %}
+{% if var.is_enum %}
+  @ffi.Uint64()
+  int enum_raw_{{var.identifier}};
+
+  {{var.type}} get {{var.identifier}} => {{var.type}}.values[enum_raw_{{var.identifier}}];
+
+  void set {{var.identifier}}({{var.type}} val) => enum_raw_{{var.identifier}} = val.index;
+{% else if var.is_struct %}
+  ffi.Pointer<{{var.type}}> {{var.identifier}};
+{% else if var.is_pointer %}
   ffi.Pointer<ffi.{{dart_ffi_type(var.type)}}> {{var.identifier}};
 {% else %}
   @ffi.{{dart_ffi_type(var.type)}}()

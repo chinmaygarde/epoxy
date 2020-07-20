@@ -50,7 +50,7 @@ class Variable {
 
   bool PassesSema(const Namespace& ns, std::stringstream& stream) const;
 
-  nlohmann::json::object_t GetJSONObject() const;
+  nlohmann::json::object_t GetJSONObject(const Namespace& ns) const;
 
  private:
   using Type = std::variant<Primitive, std::string>;
@@ -80,7 +80,7 @@ class Function {
 
   bool PassesSema(const Namespace& ns, std::stringstream& stream) const;
 
-  nlohmann::json::object_t GetJSONObject() const;
+  nlohmann::json::object_t GetJSONObject(const Namespace& ns) const;
 
  private:
   std::string name_;
@@ -103,7 +103,7 @@ class Struct {
 
   bool PassesSema(const Namespace& ns, std::stringstream& stream) const;
 
-  nlohmann::json::object_t GetJSONObject() const;
+  nlohmann::json::object_t GetJSONObject(const Namespace& ns) const;
 
  private:
   std::string name_;

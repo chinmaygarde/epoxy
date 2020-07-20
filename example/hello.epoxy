@@ -3,6 +3,9 @@ namespace hello {
 struct Hello {
   int32_t val;
   uint8_t * string;
+  HelloEnum type;
+
+  Goodbye *goodbye;
 }
 
 function SayHello() -> void;
@@ -20,6 +23,10 @@ enum HelloEnum {
   Tailor,
   Soldier,
   Sailor,
+}
+
+struct Goodbye {
+
 }
 
 } // namespace hello
