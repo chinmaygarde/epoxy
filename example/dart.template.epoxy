@@ -5,35 +5,45 @@ import 'dart:ffi' as ffi;
 {% for ns in namespaces %}
 
 {#
+  Enum definitions.
+#}
+
+{% for enum in ns.enums %}
+enum {{ enum.name }} {
+{% for member in enum.members %}
+  {{ member }},
+{% endfor %}
+} //  {{ enum.name }}
+{% endfor %}
+
+{#
    Struct Definitions.
 #}
 
 {% for struct in ns.structs %}
 class {{ struct.name }} extends ffi.Struct {
 {% for var in struct.variables %}
+
 {% if var.is_pointer %}
-ffi.Pointer<ffi.{{dart_ffi_type(var.type)}}> {{var.identifier}};
+  ffi.Pointer<ffi.{{dart_ffi_type(var.type)}}> {{var.identifier}};
 {% else %}
-@ffi.{{dart_ffi_type(var.type)}}()
-{{dart_type(var.type)}} {{var.identifier}};
+  @ffi.{{dart_ffi_type(var.type)}}()
+  {{dart_type(var.type)}} {{var.identifier}};
 {% endif %}
-
-
 {% endfor %}
 
-}
+} //  struct {{ struct.name }}
 
 
 {# Struct lifecycle prototypes. #}
-typedef {{struct.name}}CreateType = ffi.Pointer<{{struct.name}}> Function();
+typedef {{struct.name}}CreateType   = ffi.Pointer<{{struct.name}}> Function();
 typedef {{struct.name}}DestroyCType = ffi.Void Function(ffi.Pointer<{{struct.name}}>);
-typedef {{struct.name}}DestroyType = void Function(ffi.Pointer<{{struct.name}}>);
+typedef {{struct.name}}DestroyType  = void Function(ffi.Pointer<{{struct.name}}>);
 
 {{struct.name}}CreateType {{struct.name}}Create;
 {{struct.name}}DestroyType {{struct.name}}Destroy;
 
 {% endfor %}
-
 {#
    Function Definitions.
 #}

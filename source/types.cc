@@ -13,15 +13,16 @@ namespace epoxy {
 Variable::Variable() = default;
 
 Variable::Variable(Primitive primitive, std::string identifier, bool is_pointer)
-    : primitive_(std::move(primitive)),
+    : type_(std::move(primitive)),
+      identifier_(std::move(identifier)),
+      is_pointer_(is_pointer) {}
+
+Variable::Variable(std::string type, std::string identifier, bool is_pointer)
+    : type_(std::move(type)),
       identifier_(std::move(identifier)),
       is_pointer_(is_pointer) {}
 
 Variable::~Variable() = default;
-
-Primitive Variable::GetPrimitive() const {
-  return primitive_;
-}
 
 const std::string& Variable::GetIdentifier() const {
   return identifier_;
@@ -31,11 +32,49 @@ bool Variable::IsPointer() const {
   return is_pointer_;
 }
 
-bool Variable::PassesSema(std::stringstream& stream) const {
-  if (primitive_ == Primitive::kVoid && !is_pointer_) {
-    stream << "Variable '" << identifier_ << "' cannot be void." << std::endl;
-    return false;
+std::optional<std::string> Variable::GetUserDefinedType() const {
+  if (auto user_type = std::get_if<std::string>(&type_)) {
+    return *user_type;
   }
+
+  return std::nullopt;
+}
+
+std::optional<Primitive> Variable::GetPrimitive() const {
+  if (auto prim = std::get_if<Primitive>(&type_)) {
+    return *prim;
+  }
+
+  return std::nullopt;
+}
+
+bool Variable::PassesSema(const Namespace& ns,
+                          std::stringstream& stream) const {
+  if (auto primitive = GetPrimitive(); primitive.has_value()) {
+    if (primitive == Primitive::kVoid && !is_pointer_) {
+      stream << "Variable '" << identifier_ << "' cannot be void." << std::endl;
+      return false;
+    }
+  }
+
+  if (auto user_type = GetUserDefinedType(); user_type.has_value()) {
+    if (IsPointer()) {
+      // If the user defined type is a pointer, it must be a known struct.
+      if (!ns.HasStructNamed(user_type.value())) {
+        stream << "No struct named " << user_type.value() << " in namespace "
+               << ns.GetName() << std::endl;
+        return false;
+      }
+    } else {
+      // If the user defined type is not a pointer, it must be a known enum.
+      if (!ns.HasEnumNamed(user_type.value())) {
+        stream << "No enum named " << user_type.value() << " in namespace "
+               << ns.GetName() << std::endl;
+        return false;
+      }
+    }
+  }
+
   return true;
 }
 
@@ -69,7 +108,15 @@ static std::string PrimitiveToTypeString(Primitive primitive) {
 
 nlohmann::json::object_t Variable::GetJSONObject() const {
   nlohmann::json::object_t var;
-  var["type"] = PrimitiveToTypeString(primitive_);
+
+  if (auto primitive = GetPrimitive(); primitive.has_value()) {
+    var["type"] = PrimitiveToTypeString(primitive.value());
+  }
+
+  if (auto user_type = GetUserDefinedType(); user_type.has_value()) {
+    var["type"] = user_type.value();
+  }
+
   var["identifier"] = identifier_;
   var["is_pointer"] = is_pointer_;
   return var;
@@ -104,9 +151,10 @@ bool Function::ReturnsPointer() const {
   return pointer_return_;
 }
 
-bool Function::PassesSema(std::stringstream& stream) const {
+bool Function::PassesSema(const Namespace& ns,
+                          std::stringstream& stream) const {
   for (const auto& arg : arguments_) {
-    if (!arg.PassesSema(stream)) {
+    if (!arg.PassesSema(ns, stream)) {
       return false;
     }
   }
@@ -170,6 +218,18 @@ const std::vector<Enum>& Namespace::GetEnums() const {
   return enums_;
 }
 
+bool Namespace::HasEnumNamed(const std::string& name) const {
+  return std::find_if(enums_.begin(), enums_.end(), [&](const auto& enumm) {
+           return enumm.GetName() == name;
+         }) != enums_.end();
+}
+
+bool Namespace::HasStructNamed(const std::string& name) const {
+  return std::find_if(structs_.begin(), structs_.end(), [&](const auto& strut) {
+           return strut.GetName() == name;
+         }) != structs_.end();
+}
+
 void Namespace::AddFunctions(const std::vector<Function>& functions) {
   std::copy(functions.cbegin(), functions.cend(),
             std::back_inserter(functions_));
@@ -226,19 +286,19 @@ bool Namespace::PassesSema(std::stringstream& stream) const {
   }
 
   for (const auto& strut : structs_) {
-    if (!strut.PassesSema(stream)) {
+    if (!strut.PassesSema(*this, stream)) {
       return false;
     }
   }
 
   for (const auto& func : functions_) {
-    if (!func.PassesSema(stream)) {
+    if (!func.PassesSema(*this, stream)) {
       return false;
     }
   }
 
   for (const auto& enumm : enums_) {
-    if (!enumm.PassesSema(stream)) {
+    if (!enumm.PassesSema(*this, stream)) {
       return false;
     }
   }
@@ -288,10 +348,10 @@ const std::vector<Variable>& Struct::GetVariables() const {
   return variables_;
 }
 
-bool Struct::PassesSema(std::stringstream& stream) const {
+bool Struct::PassesSema(const Namespace& ns, std::stringstream& stream) const {
   std::set<std::string> variable_names;
   for (const auto& var : variables_) {
-    if (!var.PassesSema(stream)) {
+    if (!var.PassesSema(ns, stream)) {
       return false;
     }
 
@@ -334,7 +394,7 @@ const std::vector<std::string>& Enum::GetMembers() const {
   return members_;
 }
 
-bool Enum::PassesSema(std::stringstream& stream) const {
+bool Enum::PassesSema(const Namespace& ns, std::stringstream& stream) const {
   std::map<std::string, size_t> member_counts;
   for (const auto& member : members_) {
     member_counts[member]++;

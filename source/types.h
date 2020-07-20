@@ -4,6 +4,7 @@
 #pragma once
 
 #include <nlohmann/json.hpp>
+#include <optional>
 #include <sstream>
 #include <string>
 #include <variant>
@@ -12,6 +13,8 @@
 #include "macros.h"
 
 namespace epoxy {
+
+class Namespace;
 
 enum class Primitive {
   kVoid,
@@ -33,20 +36,25 @@ class Variable {
 
   Variable(Primitive primitive, std::string identifier, bool is_pointer);
 
+  Variable(std::string type, std::string identifier, bool is_pointer);
+
   ~Variable();
 
-  Primitive GetPrimitive() const;
+  std::optional<Primitive> GetPrimitive() const;
+
+  std::optional<std::string> GetUserDefinedType() const;
 
   const std::string& GetIdentifier() const;
 
   bool IsPointer() const;
 
-  bool PassesSema(std::stringstream& stream) const;
+  bool PassesSema(const Namespace& ns, std::stringstream& stream) const;
 
   nlohmann::json::object_t GetJSONObject() const;
 
  private:
-  Primitive primitive_;
+  using Type = std::variant<Primitive, std::string>;
+  Type type_;
   std::string identifier_;
   bool is_pointer_ = false;
 };
@@ -70,7 +78,7 @@ class Function {
 
   bool ReturnsPointer() const;
 
-  bool PassesSema(std::stringstream& stream) const;
+  bool PassesSema(const Namespace& ns, std::stringstream& stream) const;
 
   nlohmann::json::object_t GetJSONObject() const;
 
@@ -93,7 +101,7 @@ class Struct {
 
   const std::vector<Variable>& GetVariables() const;
 
-  bool PassesSema(std::stringstream& stream) const;
+  bool PassesSema(const Namespace& ns, std::stringstream& stream) const;
 
   nlohmann::json::object_t GetJSONObject() const;
 
@@ -114,7 +122,7 @@ class Enum {
 
   const std::vector<std::string>& GetMembers() const;
 
-  bool PassesSema(std::stringstream& stream) const;
+  bool PassesSema(const Namespace& ns, std::stringstream& stream) const;
 
   nlohmann::json::object_t GetJSONObject() const;
 
@@ -143,6 +151,10 @@ class Namespace {
   const std::vector<Struct>& GetStructs() const;
 
   const std::vector<Enum>& GetEnums() const;
+
+  bool HasEnumNamed(const std::string& name) const;
+
+  bool HasStructNamed(const std::string& name) const;
 
   void AddFunctions(const std::vector<Function>& functions);
 

@@ -148,8 +148,10 @@ Struct
   ;
 
 Variable
-  : Primitive IDENTIFIER       { $$ = epoxy::Variable{$1, $2, false}; }
-  | Primitive STAR IDENTIFIER  { $$ = epoxy::Variable{$1, $3, true};  }
+  : Primitive        IDENTIFIER       { $$ = epoxy::Variable{$1, $2, false}; }
+  | Primitive  STAR  IDENTIFIER       { $$ = epoxy::Variable{$1, $3, true};  }
+  | IDENTIFIER       IDENTIFIER       { $$ = epoxy::Variable{$1, $2, false}; }
+  | IDENTIFIER STAR  IDENTIFIER       { $$ = epoxy::Variable{$1, $3, true}; }
   ;
 
 VariableList

@@ -592,5 +592,136 @@ TEST(DriverTest, CanParseEnums) {
   ASSERT_EQ(driver.GetNamespaces()[0].GetEnums()[3].GetMembers()[7], "Spy");
 }
 
+TEST(DriverTest, EnumsCanBeStructMembers) {
+  Driver driver;
+  auto result = driver.Parse(R"~(
+
+    namespace foo {
+      enum ShapeType {
+        Rectangle,
+        Circle,
+        Triangle,
+      }
+
+      struct Shape {
+        ShapeType type;
+      }
+    }
+
+    )~");
+
+  driver.PrettyPrintErrors(std::cerr);
+  ASSERT_EQ(result, Driver::ParserResult::kSuccess);
+  ASSERT_EQ(driver.GetNamespaces().size(), 1u);
+  ASSERT_EQ(driver.GetNamespaces()[0].GetEnums().size(), 1u);
+  ASSERT_EQ(driver.GetNamespaces()[0].GetStructs().size(), 1u);
+  ASSERT_EQ(driver.GetNamespaces()[0].GetStructs()[0].GetVariables().size(),
+            1u);
+  ASSERT_FALSE(driver.GetNamespaces()[0]
+                   .GetStructs()[0]
+                   .GetVariables()[0]
+                   .GetPrimitive()
+                   .has_value());
+  ASSERT_TRUE(driver.GetNamespaces()[0]
+                  .GetStructs()[0]
+                  .GetVariables()[0]
+                  .GetUserDefinedType()
+                  .has_value());
+  ASSERT_EQ(driver.GetNamespaces()[0]
+                .GetStructs()[0]
+                .GetVariables()[0]
+                .GetUserDefinedType()
+                .value(),
+            "ShapeType");
+  ASSERT_FALSE(
+      driver.GetNamespaces()[0].GetStructs()[0].GetVariables()[0].IsPointer());
+}
+
+TEST(DriverTest, EnumsCanBeFunctionArguments) {
+  Driver driver;
+  auto result = driver.Parse(R"~(
+
+    namespace foo {
+      enum ShapeType {
+        Rectangle,
+        Circle,
+        Triangle,
+      }
+
+      function DoSomething(ShapeType type) -> void;
+    }
+
+    )~");
+
+  driver.PrettyPrintErrors(std::cerr);
+  ASSERT_EQ(result, Driver::ParserResult::kSuccess);
+  ASSERT_EQ(driver.GetNamespaces().size(), 1u);
+  ASSERT_EQ(driver.GetNamespaces()[0].GetEnums().size(), 1u);
+  ASSERT_EQ(driver.GetNamespaces()[0].GetFunctions().size(), 1u);
+}
+
+TEST(DriverTest, StructPointersCanBeStructMembers) {
+  Driver driver;
+  auto result = driver.Parse(R"~(
+
+    namespace foo {
+      struct Shape {
+        ShapeType* type;
+      }
+
+      struct ShapeType {
+
+      }
+    }
+
+    )~");
+
+  driver.PrettyPrintErrors(std::cerr);
+  ASSERT_EQ(result, Driver::ParserResult::kSuccess);
+  ASSERT_EQ(driver.GetNamespaces().size(), 1u);
+  ASSERT_EQ(driver.GetNamespaces()[0].GetStructs().size(), 2u);
+  ASSERT_EQ(driver.GetNamespaces()[0].GetStructs()[0].GetVariables().size(),
+            1u);
+  ASSERT_FALSE(driver.GetNamespaces()[0]
+                   .GetStructs()[0]
+                   .GetVariables()[0]
+                   .GetPrimitive()
+                   .has_value());
+  ASSERT_TRUE(driver.GetNamespaces()[0]
+                  .GetStructs()[0]
+                  .GetVariables()[0]
+                  .GetUserDefinedType()
+                  .has_value());
+  ASSERT_EQ(driver.GetNamespaces()[0]
+                .GetStructs()[0]
+                .GetVariables()[0]
+                .GetUserDefinedType()
+                .value(),
+            "ShapeType");
+  ASSERT_TRUE(
+      driver.GetNamespaces()[0].GetStructs()[0].GetVariables()[0].IsPointer());
+}
+
+TEST(DriverTest, StructPointersCanBeFunctionArguments) {
+  Driver driver;
+  auto result = driver.Parse(R"~(
+
+    namespace foo {
+      struct ShapeType {
+
+      }
+
+      function DoSomething(ShapeType* type) -> void;
+    }
+
+    )~");
+
+  driver.PrettyPrintErrors(std::cerr);
+  ASSERT_EQ(result, Driver::ParserResult::kSuccess);
+  ASSERT_EQ(driver.GetNamespaces().size(), 1u);
+  ASSERT_EQ(driver.GetNamespaces()[0].GetStructs().size(), 1u);
+  ASSERT_EQ(driver.GetNamespaces()[0].GetFunctions().size(), 1u);
+}
+
 }  // namespace testing
 }  // namespace epoxy
