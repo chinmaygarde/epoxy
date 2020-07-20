@@ -10,4 +10,5 @@ main() {
   ffi.Pointer<Hello> hello = HelloCreate();
   print(hello.ref.val);
   HelloDestroy(hello);
+  TakeEnumValue(HelloEnum.Tailor);
 }

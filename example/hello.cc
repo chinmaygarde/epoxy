@@ -51,6 +51,21 @@ void GoodbyeDestroy(Goodbye* object) {
   delete object;
 }
 
-void TakeEnumValue(HelloEnum val) {}
+void TakeEnumValue(HelloEnum val) {
+  switch (val) {
+    case HelloEnum::Sailor:
+      std::cout << "Dart says Sailor" << std::endl;
+      break;
+    case HelloEnum::Tailor:
+      std::cout << "Dart says Tailor" << std::endl;
+      break;
+    case HelloEnum::Soldier:
+      std::cout << "Dart says Soldier" << std::endl;
+      break;
+    case HelloEnum::Tinker:
+      std::cout << "Dart says Tinker" << std::endl;
+      break;
+  }
+}
 
 }  // namespace hello

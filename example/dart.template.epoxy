@@ -80,7 +80,7 @@ ffi.{{dart_ffi_type(arg.type)}}
 );
 
 {# Typedef for the Dart function #}
-typedef {{func.name}}DartType =
+typedef {{func.name}}DesugaredDartType =
 {% if func.pointer_return %}
 ffi.Pointer<ffi.{{dart_ffi_type(func.return_type)}}>
 {% else %}
@@ -99,8 +99,35 @@ Function(
 {% if not loop.is_last %},{% endif %}
 {% endfor %}
 );
-{{func.name}}DartType {{func.name}};
+{{func.name}}DesugaredDartType _{{func.name}}Desugared;
 
+{# Generate the function that calls the desugared Dart function. For now only enums are desugared. #}
+{% if func.pointer_return %}
+ffi.Pointer<ffi.{{dart_ffi_type(func.return_type)}}>
+{% else %}
+{{dart_type(func.return_type)}}
+{% endif %}
+{{func.name}}(
+{% for arg in func.arguments %}
+{% if arg.is_enum %}
+{{arg.type}}
+{% else if  arg.is_pointer %}
+ffi.Pointer<ffi.{{dart_ffi_type(arg.type)}}>
+{% else %}
+{{dart_type(arg.type)}}
+{% endif %}
+{{arg.identifier}} {% if not loop.is_last %},{% endif %}
+{% endfor %}
+) => _{{func.name}}Desugared(
+{% for arg in func.arguments %}
+{% if arg.is_enum %}
+{{arg.identifier}}.index
+{% else %}
+{{arg.identifier}}
+{% endif %}
+{% if not loop.is_last %},{% endif %}
+{% endfor %}
+);
 
 {% endfor %}
 
@@ -115,14 +142,14 @@ void AttachNativeBindings() {
   {# Bind standalone functions. #}
   // Bind standalone functions
   {% for func in ns.functions %}
-  {{func.name}} = dylib.lookup<ffi.NativeFunction<{{func.name}}CType>>("{{func.name}}").asFunction();
+  _{{func.name}}Desugared = dylib.lookup<ffi.NativeFunction<{{func.name}}CType>>("EPOXY_BIND_{{func.name}}").asFunction();
   {% endfor %}
 
   {# Bind struct lifecycle functions. #}
   // Bind functions that manage the lifecycles of native objects.
   {% for struct in ns.structs %}
-  {{struct.name}}Create = dylib.lookup<ffi.NativeFunction<{{struct.name}}CreateType>>("{{struct.name}}Create").asFunction();
-  {{struct.name}}Destroy = dylib.lookup<ffi.NativeFunction<{{struct.name}}DestroyCType>>("{{struct.name}}Destroy").asFunction();
+  {{struct.name}}Create = dylib.lookup<ffi.NativeFunction<{{struct.name}}CreateType>>("EPOXY_BIND_{{struct.name}}Create").asFunction();
+  {{struct.name}}Destroy = dylib.lookup<ffi.NativeFunction<{{struct.name}}DestroyCType>>("EPOXY_BIND_{{struct.name}}Destroy").asFunction();
   {% endfor %}
 }
 
