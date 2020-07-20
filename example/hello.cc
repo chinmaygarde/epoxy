@@ -68,4 +68,8 @@ void TakeEnumValue(HelloEnum val) {
   }
 }
 
+void TakePointer(Goodbye* bye) {
+  std::cout << "Got goodbye." << std::endl;
+}
+
 }  // namespace hello

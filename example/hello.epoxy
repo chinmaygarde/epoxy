@@ -31,5 +31,7 @@ struct Goodbye {
 
 function TakeEnumValue(HelloEnum val) -> void;
 
+function TakePointer(Goodbye* bye) -> void;
+
 } // namespace hello
 

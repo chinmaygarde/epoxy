@@ -70,6 +70,8 @@ Function(
 {% for arg in func.arguments%}
 {% if arg.is_enum %}
 ffi.Uint64
+{% else if arg.is_struct %}
+ffi.Pointer<{{arg.type}}>
 {% else if arg.is_pointer %}
 ffi.Pointer<ffi.{{dart_ffi_type(arg.type)}}>
 {% else %}
@@ -79,7 +81,7 @@ ffi.{{dart_ffi_type(arg.type)}}
 {% endfor %}
 );
 
-{# Typedef for the Dart function #}
+{# Typedef for the Desugared Dart function #}
 typedef {{func.name}}DesugaredDartType =
 {% if func.pointer_return %}
 ffi.Pointer<ffi.{{dart_ffi_type(func.return_type)}}>
@@ -90,6 +92,8 @@ Function(
 {% for arg in func.arguments %}
 {% if arg.is_enum %}
   int
+{% else if arg.is_struct %}
+  ffi.Pointer<{{arg.type}}>
 {% else if arg.is_pointer %}
   ffi.Pointer<ffi.{{dart_ffi_type(arg.type)}}>
 {% else %}
@@ -111,7 +115,9 @@ ffi.Pointer<ffi.{{dart_ffi_type(func.return_type)}}>
 {% for arg in func.arguments %}
 {% if arg.is_enum %}
 {{arg.type}}
-{% else if  arg.is_pointer %}
+{% else if arg.is_struct %}
+ffi.Pointer<{{arg.type}}>
+{% else if arg.is_pointer %}
 ffi.Pointer<ffi.{{dart_ffi_type(arg.type)}}>
 {% else %}
 {{dart_type(arg.type)}}
