@@ -49,27 +49,6 @@ Options:
                       the template data. This is useful when writing or
                       customizing a custom code generation template.
 
-  --template-default-cxx
-                      Use the default built-in CXX template instead of
-                      specifying a custom template file. Not recommended.
-                      Use only for really basic use-cases.
-
-  --template-default-dart
-                      Use the default built-in Dart template instead of
-                      specifying a custom template file. Not recommended. Use
-                      only for really basic use-cases.
-
-  --template-default-cxx-dump
-                      Dump the default CXX template to stdout. This may be used
-                      as the basis for further customization and then specified
-                      to subsequent runs via the --template-file parameter.
-
-  --template-default-dart-dump
-                      Dump the default Dart template to stdout. This may be used
-                      as the basis for further customization and then specified
-                      to subsequent runs via the --template-file parameter. The
-                      --idl parameter is required is this option is set.
-
   --help              Dump these help instructions.
 
   --version           Get the Epoxy version.
@@ -81,56 +60,21 @@ static void DumpHelpString(std::ostream& stream) {
 
 static std::optional<std::string> GetTemplateData(const CommandLine& args) {
   auto template_file_flag = args.GetString("template-file");
-  auto template_cxx_flag = args.GetOption("template-default-cxx");
-  auto template_dart_flag = args.GetOption("template-default-dart");
 
-  if (!template_file_flag.has_value() && !template_dart_flag.has_value() &&
-      !template_dart_flag.has_value()) {
-    std::cerr
-        << "No flag specified for the code generation template. Must be one of "
-           "template-file, template-default-cxx, or template-default-dart."
-        << std::endl;
+  if (!template_file_flag.has_value()) {
+    std::cerr << "No flag specified for the code generation template. Use the "
+                 "template-file flag."
+              << std::endl;
     return std::nullopt;
   }
 
-  size_t flags_count = 0;
-  if (template_file_flag.has_value()) {
-    flags_count++;
-  }
-  if (template_cxx_flag.has_value() && template_cxx_flag.value()) {
-    flags_count++;
-  }
-  if (template_dart_flag.has_value() && template_dart_flag.value()) {
-    flags_count++;
-  }
-
-  if (flags_count > 1) {
-    std::cerr
-        << "More than one code generation template specified. Must be one of "
-           "template-file, template-default-cxx, or template-default-dart."
-        << std::endl;
+  auto template_file_data = ReadFileAsString(template_file_flag.value());
+  if (!template_file_data.has_value()) {
+    std::cerr << "Could not read " << template_file_flag.value()
+              << " to obtain code generation template data." << std::endl;
     return std::nullopt;
   }
-
-  if (template_cxx_flag.has_value() && template_cxx_flag.value()) {
-    return CodeGen::GetDefaultCXXTemplate();
-  }
-
-  if (template_dart_flag.has_value() && template_dart_flag.value()) {
-    return CodeGen::GetDefaultDartTemplate();
-  }
-
-  if (template_file_flag.has_value()) {
-    auto template_file_data = ReadFileAsString(template_file_flag.value());
-    if (!template_file_data.has_value()) {
-      std::cerr << "Could not read " << template_file_flag.value()
-                << " to obtain code generation template data." << std::endl;
-      return std::nullopt;
-    }
-    return template_file_data;
-  }
-
-  return std::nullopt;
+  return template_file_data;
 }
 
 static std::optional<std::string> GetIDLData(const CommandLine& args) {
@@ -161,22 +105,6 @@ bool Main(const CommandLine& args) {
       version.has_value() && version.value()) {
     std::cout << EPOXY_VERSION_MAJOR << "." << EPOXY_VERSION_MINOR << "."
               << EPOXY_VERSION_PATCH << std::endl;
-    return true;
-  }
-
-  if (auto dump_default_cxx_tempalte =
-          args.GetOption("template-default-cxx-dump");
-      dump_default_cxx_tempalte.has_value() &&
-      dump_default_cxx_tempalte.value()) {
-    std::cout << CodeGen::GetDefaultCXXTemplate() << std::endl;
-    return true;
-  }
-
-  if (auto dump_default_cxx_tempalte =
-          args.GetOption("template-default-dart-dump");
-      dump_default_cxx_tempalte.has_value() &&
-      dump_default_cxx_tempalte.value()) {
-    std::cout << CodeGen::GetDefaultDartTemplate() << std::endl;
     return true;
   }
 

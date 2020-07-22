@@ -28,9 +28,8 @@ TEST(CodeGenTest, Simple) {
   Sema sema;
   auto result = sema.Perform(driver.GetNamespaces());
   ASSERT_EQ(result, Sema::Result::kSuccess);
-  auto code_gen = CodeGen::CreateGenerator(CodeGen::Type::kCXX);
-  ASSERT_TRUE(code_gen);
-  auto code_gen_result = code_gen->Render(sema.GetNamespaces());
+  auto code_gen = CodeGen({});
+  auto code_gen_result = code_gen.Render(sema.GetNamespaces());
   ASSERT_TRUE(code_gen_result.result.has_value());
 }
 
