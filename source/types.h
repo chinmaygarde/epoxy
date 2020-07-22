@@ -61,11 +61,13 @@ class Variable {
 
 class Function {
  public:
+  using ReturnType = std::variant<Primitive, std::string>;
+
   Function();
 
   Function(std::string name,
            std::vector<Variable> arguments,
-           Primitive return_type,
+           ReturnType return_type,
            bool pointer_return);
 
   ~Function();
@@ -74,7 +76,7 @@ class Function {
 
   const std::vector<Variable>& GetArguments() const;
 
-  Primitive GetReturnType() const;
+  ReturnType GetReturnType() const;
 
   bool ReturnsPointer() const;
 
@@ -85,8 +87,12 @@ class Function {
  private:
   std::string name_;
   std::vector<Variable> arguments_;
-  Primitive return_type_;
+  ReturnType return_type_;
   bool pointer_return_ = false;
+
+  std::optional<Primitive> GetPrimitiveReturn() const;
+
+  std::optional<std::string> GetUserDefinedReturn() const;
 };
 
 class Struct {

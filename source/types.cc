@@ -62,14 +62,25 @@ bool Variable::PassesSema(const Namespace& ns,
       // If the user defined type is a pointer, it must be a known struct.
       if (!ns.HasStructNamed(user_type.value())) {
         stream << "No struct named " << user_type.value() << " in namespace "
-               << ns.GetName() << std::endl;
+               << ns.GetName() << "." << std::endl;
+        if (ns.HasEnumNamed(user_type.value())) {
+          stream << "There is an enum named " << user_type.value()
+                 << " but enums but may only be specified by value."
+                 << std::endl;
+        }
         return false;
       }
     } else {
       // If the user defined type is not a pointer, it must be a known enum.
       if (!ns.HasEnumNamed(user_type.value())) {
         stream << "No enum named " << user_type.value() << " in namespace "
-               << ns.GetName() << std::endl;
+               << ns.GetName() << "." << std::endl;
+        if (ns.HasStructNamed(user_type.value())) {
+          stream << "There is an struct named " << user_type.value()
+                 << " but structs may not be specified by value. Use a pointer "
+                    "to the struct instead."
+                 << std::endl;
+        }
         return false;
       }
     }
@@ -132,7 +143,7 @@ Function::Function() = default;
 
 Function::Function(std::string name,
                    std::vector<Variable> arguments,
-                   Primitive return_type,
+                   ReturnType return_type,
                    bool pointer_return)
     : name_(std::move(name)),
       arguments_(std::move(arguments)),
@@ -149,7 +160,7 @@ const std::vector<Variable>& Function::GetArguments() const {
   return arguments_;
 }
 
-Primitive Function::GetReturnType() const {
+Function::ReturnType Function::GetReturnType() const {
   return return_type_;
 }
 
@@ -164,7 +175,58 @@ bool Function::PassesSema(const Namespace& ns,
       return false;
     }
   }
+
+  if (auto ret = GetUserDefinedReturn(); ret.has_value()) {
+    // If the user defined type is a struct, it must be a pointer. Otherwise, it
+    // must be an enum.
+    if (ReturnsPointer()) {
+      if (!ns.HasStructNamed(ret.value())) {
+        stream << "Function " << name_ << " in namespace " << ns.GetName()
+               << " specifies a return type " << ret.value() << "."
+               << std::endl;
+        stream << "However, " << ret.value() << " is not a known struct name."
+               << std::endl;
+        if (ns.HasEnumNamed(ret.value())) {
+          stream << "There is an enum named " << ret.value()
+                 << ". But enums may only be returned by value. Drop the "
+                    "return by pointer."
+                 << std::endl;
+        }
+        return false;
+      }
+    } else {
+      if (!ns.HasEnumNamed(ret.value())) {
+        stream << "Function " << name_ << " in namespace " << ns.GetName()
+               << " specifies a return type " << ret.value() << "."
+               << std::endl;
+        stream << "However, " << ret.value() << " is not a known enum name."
+               << std::endl;
+        if (ns.HasStructNamed(ret.value())) {
+          stream << "There is a struct named " << ret.value()
+                 << ". But structs may not be returned by value. Use a pointer "
+                    "return instead."
+                 << std::endl;
+        }
+        return false;
+      }
+    }
+  }
+
   return true;
+}
+
+std::optional<Primitive> Function::GetPrimitiveReturn() const {
+  if (auto val = std::get_if<Primitive>(&return_type_)) {
+    return *val;
+  }
+  return std::nullopt;
+}
+
+std::optional<std::string> Function::GetUserDefinedReturn() const {
+  if (auto val = std::get_if<std::string>(&return_type_)) {
+    return *val;
+  }
+  return std::nullopt;
 }
 
 nlohmann::json::object_t Function::GetJSONObject(const Namespace& ns) const {
@@ -176,7 +238,17 @@ nlohmann::json::object_t Function::GetJSONObject(const Namespace& ns) const {
 
   nlohmann::json::object_t fun;
   fun["name"] = name_;
-  fun["return_type"] = PrimitiveToTypeString(return_type_);
+  if (auto ret = GetPrimitiveReturn(); ret.has_value()) {
+    fun["return_type"] = PrimitiveToTypeString(ret.value());
+    fun["returns_struct"] = false;
+    fun["returns_enum"] = false;
+    fun["returns_primitive"] = true;
+  } else if (auto ret = GetUserDefinedReturn(); ret.has_value()) {
+    fun["return_type"] = ret.value();
+    fun["returns_struct"] = ns.HasStructNamed(ret.value());
+    fun["returns_enum"] = ns.HasEnumNamed(ret.value());
+    fun["returns_primitive"] = false;
+  }
   fun["pointer_return"] = pointer_return_;
   fun["arguments"] = std::move(args);
 

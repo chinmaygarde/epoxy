@@ -154,5 +154,41 @@ TEST(SemaTest, StructNamesInFunctionArgsMustBeKnown) {
   ASSERT_EQ(result, Sema::Result::kError);
 }
 
+TEST(SemaTest, CannotReturnPointerToUnknownStruct) {
+  Driver driver;
+  auto driver_result = driver.Parse(R"~(
+    namespace foo {
+      enum AbsentStruct {
+
+      }
+      function Foo() -> AbsentStruct*;
+    }
+  )~");
+  driver.PrettyPrintErrors(std::cerr);
+  ASSERT_EQ(driver_result, Driver::ParserResult::kSuccess);
+  Sema sema;
+  auto result = sema.Perform(driver.GetNamespaces());
+  sema.PrettyPrintErrors(std::cerr);
+  ASSERT_EQ(result, Sema::Result::kError);
+}
+
+TEST(SemaTest, CannotReturnUnknownEnum) {
+  Driver driver;
+  auto driver_result = driver.Parse(R"~(
+    namespace foo {
+      struct AbsentEnum {
+
+      }
+      function Foo() -> AbsentEnum;
+    }
+  )~");
+  driver.PrettyPrintErrors(std::cerr);
+  ASSERT_EQ(driver_result, Driver::ParserResult::kSuccess);
+  Sema sema;
+  auto result = sema.Perform(driver.GetNamespaces());
+  sema.PrettyPrintErrors(std::cerr);
+  ASSERT_EQ(result, Sema::Result::kError);
+}
+
 }  // namespace testing
 }  // namespace epoxy

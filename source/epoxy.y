@@ -87,6 +87,7 @@
 %type <epoxy::Struct> Struct
 %type <epoxy::Enum> Enum
 %type <std::vector<std::string>> IdentifierList
+%type <std::variant<Primitive, std::string>> PrimitiveOrIdentifier
 
 %start SourceFile
 
@@ -131,10 +132,15 @@ IdentifierList
   ;
 
 Function
-  : FUNCTION IDENTIFIER PAREN_LEFT ArgumentList PAREN_RIGHT ARROW Primitive      SEMI_COLON { $$ = epoxy::Function{$2, $4, $7, false}; }
-  | FUNCTION IDENTIFIER PAREN_LEFT ArgumentList PAREN_RIGHT ARROW Primitive STAR SEMI_COLON { $$ = epoxy::Function{$2, $4, $7, true}; }
-  | FUNCTION IDENTIFIER PAREN_LEFT              PAREN_RIGHT ARROW Primitive      SEMI_COLON { $$ = epoxy::Function{$2, {}, $6, false}; }
-  | FUNCTION IDENTIFIER PAREN_LEFT              PAREN_RIGHT ARROW Primitive STAR SEMI_COLON { $$ = epoxy::Function{$2, {}, $6, true}; }
+  : FUNCTION IDENTIFIER PAREN_LEFT ArgumentList PAREN_RIGHT ARROW PrimitiveOrIdentifier      SEMI_COLON { $$ = epoxy::Function{$2, $4, $7, false}; }
+  | FUNCTION IDENTIFIER PAREN_LEFT ArgumentList PAREN_RIGHT ARROW PrimitiveOrIdentifier STAR SEMI_COLON { $$ = epoxy::Function{$2, $4, $7, true}; }
+  | FUNCTION IDENTIFIER PAREN_LEFT              PAREN_RIGHT ARROW PrimitiveOrIdentifier      SEMI_COLON { $$ = epoxy::Function{$2, {}, $6, false}; }
+  | FUNCTION IDENTIFIER PAREN_LEFT              PAREN_RIGHT ARROW PrimitiveOrIdentifier STAR SEMI_COLON { $$ = epoxy::Function{$2, {}, $6, true}; }
+  ;
+
+PrimitiveOrIdentifier
+  : Primitive       { $$ = $1; }
+  | IDENTIFIER      { $$ = $1; }
   ;
 
 ArgumentList
@@ -148,10 +154,10 @@ Struct
   ;
 
 Variable
-  : Primitive        IDENTIFIER       { $$ = epoxy::Variable{$1, $2, false}; }
-  | Primitive  STAR  IDENTIFIER       { $$ = epoxy::Variable{$1, $3, true};  }
-  | IDENTIFIER       IDENTIFIER       { $$ = epoxy::Variable{$1, $2, false}; }
-  | IDENTIFIER STAR  IDENTIFIER       { $$ = epoxy::Variable{$1, $3, true}; }
+  : Primitive        IDENTIFIER  { $$ = epoxy::Variable{$1, $2, false}; }
+  | Primitive  STAR  IDENTIFIER  { $$ = epoxy::Variable{$1, $3, true};  }
+  | IDENTIFIER       IDENTIFIER  { $$ = epoxy::Variable{$1, $2, false}; }
+  | IDENTIFIER STAR  IDENTIFIER  { $$ = epoxy::Variable{$1, $3, true};  }
   ;
 
 VariableList

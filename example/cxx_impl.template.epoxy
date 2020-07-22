@@ -18,7 +18,12 @@ extern "C" {
 {% for ns in namespaces %}
 {% for func in ns.functions%}
 
-EPOXY_EXPORT {{func.return_type}}{% if func.pointer_return %}*{% endif %} EPOXY_BIND_{{func.name}}(
+EPOXY_EXPORT
+{% if func.returns_enum or func.returns_struct %}
+{{ns.name}}::
+{% endif %}
+{{func.return_type}} {% if func.pointer_return %}*{% endif %}
+ EPOXY_BIND_{{func.name}}(
 {% for arg in func.arguments %}
 {% if arg.is_enum %}
 uint64_t
@@ -44,14 +49,6 @@ uint64_t
 {% endfor %} // functions
 
 {% for struct in ns.structs %}
-
-EPOXY_EXPORT {{ns.name}}::{{ struct.name }}* EPOXY_BIND_{{struct.name}}Create() {
-  return {{ns.name}}::{{struct.name}}Create();
-}
-
-EPOXY_EXPORT void EPOXY_BIND_{{struct.name}}Destroy({{ns.name}}::{{struct.name}}* object) {
-  {{ns.name}}::{{struct.name}}Destroy(object);
-}
 {% endfor %} // structs
 
 {% endfor %} // namespaces

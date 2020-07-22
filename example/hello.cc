@@ -4,72 +4,39 @@
 // This file is generated and present in the gen/ build outputs directory.
 #include "hello.h"
 
+#include <cstring>
 #include <iostream>
 
 namespace hello {
 
 void SayHello() {
-  std::cout << "Hello from native code!" << std::endl;
-}
-
-double AddNumbers(int32_t a, int64_t b, float c) {
-  return a + b + c;
+  std::cout << "Hello from C++ code." << std::endl;
 }
 
 int32_t* GetIntPointer() {
-  static int32_t some_int = 123;
-  return &some_int;
+  static int32_t value = 42;
+  return &value;
 }
 
-double* GetDoublePointer() {
-  static double some_double = 456.0;
-  return &some_double;
+int32_t AddValues(int32_t* a, int32_t b) {
+  return *a + b;
 }
 
-void AddPointerValues(int32_t* a, double* b) {
-  const auto value = *a + *b;
-  std::cout << "The values added up are " << value << std::endl;
-}
-
-Hello* HelloCreate() {
+Hello* CreateHello(HelloType type) {
+  std::cout << "Creating a hello struct." << std::endl;
   auto hello = new Hello();
-  hello->val = 42;
-  std::cout << "Create Hello." << std::endl;
+  std::memset(hello, 0, sizeof(Hello));
+  hello->type = type;
   return hello;
 }
 
-void HelloDestroy(Hello* object) {
-  std::cout << "Destroy Hello." << std::endl;
-  delete object;
+void DestroyHello(Hello* hello) {
+  std::cout << "Destroying a hello struct." << std::endl;
+  delete hello;
 }
 
-Goodbye* GoodbyeCreate() {
-  return new Goodbye();
-}
-
-void GoodbyeDestroy(Goodbye* object) {
-  delete object;
-}
-
-void TakeEnumValue(HelloEnum val) {
-  switch (val) {
-    case HelloEnum::Sailor:
-      std::cout << "Dart says Sailor" << std::endl;
-      break;
-    case HelloEnum::Tailor:
-      std::cout << "Dart says Tailor" << std::endl;
-      break;
-    case HelloEnum::Soldier:
-      std::cout << "Dart says Soldier" << std::endl;
-      break;
-    case HelloEnum::Tinker:
-      std::cout << "Dart says Tinker" << std::endl;
-      break;
-  }
-}
-
-void TakePointer(Goodbye* bye) {
-  std::cout << "Got goodbye." << std::endl;
+HelloType TakeHelloType() {
+  return HelloType::LongWinded;
 }
 
 }  // namespace hello

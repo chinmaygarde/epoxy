@@ -33,13 +33,6 @@ struct {{ struct.name }} {
   {{var.type}}{% if var.is_pointer %}* {% endif %} {{var.identifier}};
 {% endfor %}
 }; //  {{ struct.name }}
-
-{#
-    Struct lifecycle management functions.
-#}
-{{ struct.name }}* {{struct.name}}Create();
-
-void {{struct.name}}Destroy({{struct.name}}* object);
 {% endfor %}
 
 {#

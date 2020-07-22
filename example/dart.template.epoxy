@@ -44,15 +44,6 @@ class {{ struct.name }} extends ffi.Struct {
 
 } //  struct {{ struct.name }}
 
-
-{# Struct lifecycle prototypes. #}
-typedef {{struct.name}}CreateType   = ffi.Pointer<{{struct.name}}> Function();
-typedef {{struct.name}}DestroyCType = ffi.Void Function(ffi.Pointer<{{struct.name}}>);
-typedef {{struct.name}}DestroyType  = void Function(ffi.Pointer<{{struct.name}}>);
-
-{{struct.name}}CreateType {{struct.name}}Create;
-{{struct.name}}DestroyType {{struct.name}}Destroy;
-
 {% endfor %}
 {#
    Function Definitions.
@@ -61,10 +52,16 @@ typedef {{struct.name}}DestroyType  = void Function(ffi.Pointer<{{struct.name}}>
 {# Typedef for the native function #}
 {% for func in ns.functions %}
 typedef {{func.name}}CType =
-{% if func.pointer_return %}
-ffi.Pointer<ffi.{{dart_ffi_type(func.return_type)}}>
+{% if func.returns_enum %}
+  ffi.Uint64
+{% else if func.returns_struct %}
+  ffi.Pointer<{{func.return_type}}>
 {% else %}
-ffi.{{dart_ffi_type(func.return_type)}}
+  {% if func.pointer_return %}
+  ffi.Pointer<ffi.{{dart_ffi_type(func.return_type)}}>
+  {% else %}
+  ffi.{{dart_ffi_type(func.return_type)}}
+  {% endif %}
 {% endif %}
 Function(
 {% for arg in func.arguments%}
@@ -83,10 +80,16 @@ ffi.{{dart_ffi_type(arg.type)}}
 
 {# Typedef for the Desugared Dart function #}
 typedef {{func.name}}DesugaredDartType =
-{% if func.pointer_return %}
-ffi.Pointer<ffi.{{dart_ffi_type(func.return_type)}}>
+{% if func.returns_enum %}
+  int
+{% else if func.returns_struct%}
+  ffi.Pointer<{{func.return_type}}>
 {% else %}
-{{dart_type(func.return_type)}}
+  {% if func.pointer_return %}
+  ffi.Pointer<ffi.{{dart_ffi_type(func.return_type)}}>
+  {% else %}
+  {{dart_type(func.return_type)}}
+  {% endif %}
 {% endif %}
 Function(
 {% for arg in func.arguments %}
@@ -105,13 +108,19 @@ Function(
 );
 {{func.name}}DesugaredDartType _{{func.name}}Desugared;
 
-{# Generate the function that calls the desugared Dart function. For now only enums are desugared. #}
-{% if func.pointer_return %}
-ffi.Pointer<ffi.{{dart_ffi_type(func.return_type)}}>
+{# Generate the function that calls the desugared Dart function. For now, only enums are desugared. #}
+{% if func.returns_enum %}
+  {{ func.return_type }}
+{% else if func.returns_struct %}
+  ffi.Pointer<{{ func.return_type }}>
 {% else %}
-{{dart_type(func.return_type)}}
+  {% if func.pointer_return %}
+  ffi.Pointer<ffi.{{dart_ffi_type(func.return_type)}}>
+  {% else %}
+  {{dart_type(func.return_type)}}
+  {% endif %}
 {% endif %}
-{{func.name}}(
+ {{func.name}}(
 {% for arg in func.arguments %}
 {% if arg.is_enum %}
 {{arg.type}}
@@ -124,7 +133,12 @@ ffi.Pointer<ffi.{{dart_ffi_type(arg.type)}}>
 {% endif %}
 {{arg.identifier}} {% if not loop.is_last %},{% endif %}
 {% endfor %}
-) => _{{func.name}}Desugared(
+) {
+  return
+{% if func.returns_enum %}
+{{func.return_type}}.values[
+{% endif %}
+ _{{func.name}}Desugared(
 {% for arg in func.arguments %}
 {% if arg.is_enum %}
 {{arg.identifier}}.index
@@ -133,7 +147,12 @@ ffi.Pointer<ffi.{{dart_ffi_type(arg.type)}}>
 {% endif %}
 {% if not loop.is_last %},{% endif %}
 {% endfor %}
-);
+)
+{% if func.returns_enum %}
+]
+{% endif %}
+;
+}
 
 {% endfor %}
 
@@ -149,13 +168,6 @@ void AttachNativeBindings() {
   // Bind standalone functions
   {% for func in ns.functions %}
   _{{func.name}}Desugared = dylib.lookup<ffi.NativeFunction<{{func.name}}CType>>("EPOXY_BIND_{{func.name}}").asFunction();
-  {% endfor %}
-
-  {# Bind struct lifecycle functions. #}
-  // Bind functions that manage the lifecycles of native objects.
-  {% for struct in ns.structs %}
-  {{struct.name}}Create = dylib.lookup<ffi.NativeFunction<{{struct.name}}CreateType>>("EPOXY_BIND_{{struct.name}}Create").asFunction();
-  {{struct.name}}Destroy = dylib.lookup<ffi.NativeFunction<{{struct.name}}DestroyCType>>("EPOXY_BIND_{{struct.name}}Destroy").asFunction();
   {% endfor %}
 }
 

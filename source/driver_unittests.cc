@@ -86,6 +86,15 @@ TEST(DriverTest, CommentsAreIgnored) {
   ASSERT_EQ(driver.GetNamespaces()[0].GetName(), "foo");
 }
 
+template <class T>
+bool CheckFunctionReturnType(const Function::ReturnType& type, T value) {
+  auto val = std::get_if<T>(&type);
+  if (val == nullptr) {
+    return false;
+  }
+  return *val == value;
+}
+
 TEST(DriverTest, CanParseFunctions) {
   Driver driver;
   auto result = driver.Parse(R"~(
@@ -133,8 +142,9 @@ TEST(DriverTest, CanParseFunctions) {
                 .GetArguments()[2]
                 .GetPrimitive(),
             Primitive::kInt64);
-  ASSERT_EQ(driver.GetNamespaces()[0].GetFunctions()[0].GetReturnType(),
-            Primitive::kInt64);
+  ASSERT_TRUE(CheckFunctionReturnType(
+      driver.GetNamespaces()[0].GetFunctions()[0].GetReturnType(),
+      Primitive::kInt64));
 }
 
 TEST(DriverTest, CanParseFunctionsVariations) {
@@ -417,8 +427,9 @@ TEST(DriverTest, CanParsePointers) {
   ASSERT_EQ(driver.GetNamespaces()[0].GetFunctions()[0].GetName(), "world");
   ASSERT_EQ(driver.GetNamespaces()[0].GetFunctions()[0].GetArguments().size(),
             0u);
-  ASSERT_EQ(driver.GetNamespaces()[0].GetFunctions()[0].GetReturnType(),
-            Primitive::kInt64);
+  ASSERT_TRUE(CheckFunctionReturnType(
+      driver.GetNamespaces()[0].GetFunctions()[0].GetReturnType(),
+      Primitive::kInt64));
   ASSERT_TRUE(driver.GetNamespaces()[0].GetFunctions()[0].ReturnsPointer());
   ASSERT_EQ(driver.GetNamespaces()[0].GetFunctions()[1].GetName(), "world2");
   ASSERT_EQ(driver.GetNamespaces()[0].GetFunctions()[1].GetArguments().size(),
@@ -437,8 +448,9 @@ TEST(DriverTest, CanParsePointers) {
                 .GetArguments()[0]
                 .GetPrimitive(),
             Primitive::kUnsignedInt64);
-  ASSERT_EQ(driver.GetNamespaces()[0].GetFunctions()[1].GetReturnType(),
-            Primitive::kInt32);
+  ASSERT_TRUE(CheckFunctionReturnType(
+      driver.GetNamespaces()[0].GetFunctions()[1].GetReturnType(),
+      Primitive::kInt32));
   ASSERT_TRUE(driver.GetNamespaces()[0].GetFunctions()[1].ReturnsPointer());
 }
 
@@ -493,8 +505,9 @@ TEST(DriverTest, CanParseVoidAndVoidPointer) {
   ASSERT_EQ(driver.GetNamespaces()[0].GetFunctions()[0].GetName(), "world");
   ASSERT_EQ(driver.GetNamespaces()[0].GetFunctions()[0].GetArguments().size(),
             0u);
-  ASSERT_EQ(driver.GetNamespaces()[0].GetFunctions()[0].GetReturnType(),
-            Primitive::kVoid);
+  ASSERT_TRUE(CheckFunctionReturnType(
+      driver.GetNamespaces()[0].GetFunctions()[0].GetReturnType(),
+      Primitive::kVoid));
   ASSERT_TRUE(driver.GetNamespaces()[0].GetFunctions()[0].ReturnsPointer());
   ASSERT_EQ(driver.GetNamespaces()[0].GetFunctions()[1].GetName(), "world2");
   ASSERT_EQ(driver.GetNamespaces()[0].GetFunctions()[1].GetArguments().size(),
@@ -513,8 +526,9 @@ TEST(DriverTest, CanParseVoidAndVoidPointer) {
                 .GetArguments()[0]
                 .GetPrimitive(),
             Primitive::kVoid);
-  ASSERT_EQ(driver.GetNamespaces()[0].GetFunctions()[1].GetReturnType(),
-            Primitive::kVoid);
+  ASSERT_TRUE(CheckFunctionReturnType(
+      driver.GetNamespaces()[0].GetFunctions()[1].GetReturnType(),
+      Primitive::kVoid));
   ASSERT_TRUE(driver.GetNamespaces()[0].GetFunctions()[1].ReturnsPointer());
 }
 
@@ -721,6 +735,34 @@ TEST(DriverTest, StructPointersCanBeFunctionArguments) {
   ASSERT_EQ(driver.GetNamespaces().size(), 1u);
   ASSERT_EQ(driver.GetNamespaces()[0].GetStructs().size(), 1u);
   ASSERT_EQ(driver.GetNamespaces()[0].GetFunctions().size(), 1u);
+}
+
+TEST(DriverTest, CanReturnUserDefinedType) {
+  Driver driver;
+  auto result = driver.Parse(R"~(
+
+    namespace foo {
+      struct ShapeType {
+
+      }
+
+      enum Foo {
+
+      }
+
+      function DoSomething(ShapeType* type) -> ShapeType*;
+
+      function DoSomething2(ShapeType* type) -> Foo;
+    }
+
+    )~");
+
+  driver.PrettyPrintErrors(std::cerr);
+  ASSERT_EQ(result, Driver::ParserResult::kSuccess);
+  ASSERT_EQ(driver.GetNamespaces().size(), 1u);
+  ASSERT_EQ(driver.GetNamespaces()[0].GetStructs().size(), 1u);
+  ASSERT_EQ(driver.GetNamespaces()[0].GetEnums().size(), 1u);
+  ASSERT_EQ(driver.GetNamespaces()[0].GetFunctions().size(), 2u);
 }
 
 }  // namespace testing

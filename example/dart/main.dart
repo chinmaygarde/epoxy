@@ -3,15 +3,18 @@ import 'dart:ffi' as ffi;
 import '../../build/clang/example/gen/hello.dart';
 
 main() {
+  // This must be done before using any of the generated utilities.
   AttachNativeBindings();
+
   SayHello();
-  print(AddNumbers(12, 14, 10.0));
-  AddPointerValues(GetIntPointer(), GetDoublePointer());
-  ffi.Pointer<Hello> hello = HelloCreate();
-  print(hello.ref.val);
-  HelloDestroy(hello);
-  TakeEnumValue(HelloEnum.Tailor);
-  ffi.Pointer<Goodbye> goodbye = GoodbyeCreate();
-  TakePointer(goodbye);
-  GoodbyeDestroy(goodbye);
+
+  print(AddValues(GetIntPointer(), 99));
+
+  var hello = CreateHello(HelloType.LongWinded);
+  if (hello.ref.type == HelloType.LongWinded
+   && hello.ref.type == TakeHelloType()) {
+    print("Enums work idiomatically in Dart and C++.");
+  }
+
+  DestroyHello(hello);
 }

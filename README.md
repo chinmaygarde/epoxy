@@ -33,12 +33,16 @@ The following primitives may be specified directly in an Epoxy definition file.
 * `double`: A 64-bit double.
 * `float`: A 32-bit float.
 
+* `void`: The void type may be used to specify a pointer to an opaque type.
+
 ## Pointers
 
-Pointers to primitive values or structs may be specifed by appending `*`.
+Pointers to primitive values or structs may be specifed by prepending them with `*`.
 
 ```
 function GiveIntPointer() -> int8_t*;
+function CreateHello() -> Hello*;
+function DestroyHello(Hello*) -> void;
 ```
 
 ## Enums
