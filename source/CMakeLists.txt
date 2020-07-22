@@ -79,6 +79,8 @@ add_executable(epoxy_unittests
   code_gen_unittests.cc
 )
 
+add_test(epoxy_unittests epoxy_unittests)
+
 target_link_libraries(epoxy_unittests
   PRIVATE
     epoxy_lib

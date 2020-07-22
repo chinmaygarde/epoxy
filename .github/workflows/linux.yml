@@ -26,4 +26,4 @@ jobs:
     - name: Build Project
       run: (cd build && ninja)
     - name: Run Unit-Tests
-      run: (cd build && ./source/epoxy_unittests)
+      run: (cd build && ctest -VV)

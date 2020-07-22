@@ -22,4 +22,4 @@ jobs:
     - name: Build Project
       run: cmake --build build
     - name: Run Unit-Tests
-      run: (cd build && ./source/epoxy_unittests.exe)
+      run: (cd build && ctest -VV)
