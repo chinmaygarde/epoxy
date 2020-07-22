@@ -34,8 +34,8 @@ Options:
 --------
 
   --output            The path to the file containing the Code generated for the
-                      given options. Optional if any of the -dump options are
-                      set.
+                      given options. Optional if if --template-data-dump is
+                      specified.
 
   --idl               The path the Epoxy IDL file.
 

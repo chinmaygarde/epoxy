@@ -12,7 +12,7 @@
 			"file_regex": "([a-zA-Z/_\\.\\d+-]+):(\\d+):(\\d+): ([\\w\\s':<>,&()^*=;-]+)",
 			"name": "Epoxy Build All Windows Clang",
 			"shell": true,
-			"shell_cmd": "(cmake ../.. -G Ninja && ninja && .\\source\\epoxy_unittests.exe && dart run ..\\..\\example\\dart\\main.dart)",
+			"shell_cmd": "(cmake ../.. -DCMAKE_BUILD_TYPE=Debug -G Ninja && ninja && .\\source\\epoxy_unittests.exe && dart run ..\\..\\example\\dart\\main.dart)",
 			"working_dir": "${project_path}/build/clang"
 		}
 	],
