@@ -1,25 +1,15 @@
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
   add_compile_options(
-    /W3
-    /WX
     /wd4267
-    /wd4305
-    /wd4244
-  )
-
-  add_definitions(
-    "-D_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS=1"
+    /wd4065
+    /wd4101
+    /wd4005
   )
 else()
   add_compile_options(
     -Wall
     -Werror
-
-    -Wno-deprecated-declarations
-  )
-
-  add_compile_options(
     -fdiagnostics-color=always
   )
 endif()
@@ -30,22 +20,23 @@ if(WINDOWS)
 endif(WINDOWS)
 
 add_library(epoxy_lib
-  code_gen.cc
-  code_gen.h
-  command_line.cc
-  command_line.h
-  driver.cc
-  driver.h
-  file.cc
-  file.h
-  macros.h
-  scanner.cc
-  scanner.h
-  sema.cc
-  sema.h
-  types.cc
-  types.h
-  version.h
+  STATIC
+    code_gen.cc
+    code_gen.h
+    command_line.cc
+    command_line.h
+    driver.cc
+    driver.h
+    file.cc
+    file.h
+    macros.h
+    scanner.cc
+    scanner.h
+    sema.cc
+    sema.h
+    types.cc
+    types.h
+    version.h
 )
 
 add_lexer(epoxy_lib
@@ -78,7 +69,8 @@ add_executable(epoxy
 )
 
 target_link_libraries(epoxy
-  epoxy_lib
+  PRIVATE
+    epoxy_lib
 )
 
 add_executable(epoxy_unittests
@@ -88,7 +80,8 @@ add_executable(epoxy_unittests
 )
 
 target_link_libraries(epoxy_unittests
-  epoxy_lib
-  gtest
-  gtest_main
+  PRIVATE
+    epoxy_lib
+    gtest
+    gtest_main
 )

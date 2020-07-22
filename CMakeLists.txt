@@ -8,7 +8,14 @@ else()
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
 endif()
 
-set(CMAKE_CXX_STANDARD_REQUIRED YES)
+if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+  add_compile_options(
+    $<$<CONFIG:>:/MT>
+    $<$<CONFIG:Debug>:/MTd>
+    $<$<CONFIG:Release>:/MT>
+  )
+endif()
+
 set(CMAKE_EXPORT_COMPILE_COMMANDS YES)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/tools")
