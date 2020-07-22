@@ -20,6 +20,9 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS YES)
 
 enable_testing()
 
+set(EPOXY_FLEX_SEARCH_PATH  "" CACHE STRING "Path to the flex (>=2.6.3) program.")
+set(EPOXY_BISON_SEARCH_PATH "" CACHE STRING "Path to the Bison (>=3.3.2) program.")
+
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/tools")
 
 include(platform_selection)

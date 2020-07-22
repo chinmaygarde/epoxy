@@ -1,6 +1,8 @@
 # Epoxy
 
-![CMake Build and Test](https://github.com/chinmaygarde/epoxy/workflows/Linux/badge.svg)
+![Linux](https://github.com/chinmaygarde/epoxy/workflows/Linux/badge.svg)
+![Mac](https://github.com/chinmaygarde/epoxy/workflows/Mac/badge.svg)
+![Windows](https://github.com/chinmaygarde/epoxy/workflows/Windows/badge.svg)
 
 This is just an experiment. Nothing to see here yet.
 

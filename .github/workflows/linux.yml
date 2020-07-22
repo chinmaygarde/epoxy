@@ -24,6 +24,6 @@ jobs:
     - name: Generate CMake Project
       run: (cd build && cmake ../ -G Ninja)
     - name: Build Project
-      run: (cd build && ninja)
+      run: cmake --build build
     - name: Run Unit-Tests
       run: (cd build && ctest -VV)
