@@ -79,6 +79,9 @@ function CreateHello(HelloType type) -> Hello*;
 
 function DestroyHello(Hello* hello) -> void;
 
+// Function that return void may just skip the -> void bit.
+function DoSomethingElse();
+
 function TakeHelloType() -> HelloType;
 
 // Enums may not be returned by pointer.

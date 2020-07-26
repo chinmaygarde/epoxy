@@ -39,4 +39,6 @@ HelloType TakeHelloType() {
   return HelloType::LongWinded;
 }
 
+void DoSomethingElse() {}
+
 }  // namespace hello

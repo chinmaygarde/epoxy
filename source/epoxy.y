@@ -134,8 +134,10 @@ IdentifierList
 Function
   : FUNCTION IDENTIFIER PAREN_LEFT ArgumentList PAREN_RIGHT ARROW PrimitiveOrIdentifier      SEMI_COLON { $$ = epoxy::Function{$2, $4, $7, false}; }
   | FUNCTION IDENTIFIER PAREN_LEFT ArgumentList PAREN_RIGHT ARROW PrimitiveOrIdentifier STAR SEMI_COLON { $$ = epoxy::Function{$2, $4, $7, true}; }
+  | FUNCTION IDENTIFIER PAREN_LEFT ArgumentList PAREN_RIGHT                                  SEMI_COLON { $$ = epoxy::Function{$2, $4, epoxy::Primitive::kVoid, false}; }
   | FUNCTION IDENTIFIER PAREN_LEFT              PAREN_RIGHT ARROW PrimitiveOrIdentifier      SEMI_COLON { $$ = epoxy::Function{$2, {}, $6, false}; }
   | FUNCTION IDENTIFIER PAREN_LEFT              PAREN_RIGHT ARROW PrimitiveOrIdentifier STAR SEMI_COLON { $$ = epoxy::Function{$2, {}, $6, true}; }
+  | FUNCTION IDENTIFIER PAREN_LEFT              PAREN_RIGHT                                  SEMI_COLON { $$ = epoxy::Function{$2, {}, epoxy::Primitive::kVoid, false}; }
   ;
 
 PrimitiveOrIdentifier

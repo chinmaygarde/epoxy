@@ -765,5 +765,30 @@ TEST(DriverTest, CanReturnUserDefinedType) {
   ASSERT_EQ(driver.GetNamespaces()[0].GetFunctions().size(), 2u);
 }
 
+TEST(DriverTest, VoidReturnIsOptional) {
+  Driver driver;
+  auto result = driver.Parse(R"~(
+
+    namespace foo {
+      function DoSomething();
+      function DoSomething2(int32_t a, int64_t b);
+    }
+
+    )~");
+
+  driver.PrettyPrintErrors(std::cerr);
+  ASSERT_EQ(result, Driver::ParserResult::kSuccess);
+  ASSERT_EQ(driver.GetNamespaces().size(), 1u);
+  ASSERT_EQ(driver.GetNamespaces()[0].GetFunctions().size(), 2u);
+  ASSERT_TRUE(CheckFunctionReturnType(
+      driver.GetNamespaces()[0].GetFunctions()[0].GetReturnType(),
+      Primitive::kVoid));
+  ASSERT_FALSE(driver.GetNamespaces()[0].GetFunctions()[0].ReturnsPointer());
+  ASSERT_TRUE(CheckFunctionReturnType(
+      driver.GetNamespaces()[0].GetFunctions()[1].GetReturnType(),
+      Primitive::kVoid));
+  ASSERT_FALSE(driver.GetNamespaces()[0].GetFunctions()[1].ReturnsPointer());
+}
+
 }  // namespace testing
 }  // namespace epoxy
