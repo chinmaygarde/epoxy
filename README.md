@@ -39,7 +39,7 @@ The following primitives may be specified directly in an Epoxy definition file.
 
 ## Pointers
 
-Pointers to primitive values or structs may be specifed by prepending them with `*`.
+Pointers to primitive values or structs may be specified by prepending them with `*`.
 
 ```
 function GiveIntPointer() -> int8_t*

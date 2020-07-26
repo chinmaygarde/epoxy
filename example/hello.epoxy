@@ -88,4 +88,3 @@ function TakeHelloType() -> HelloType
 // function TakeHelloType() -> HelloType* <------ Error.
 
 } // namespace hello
-
