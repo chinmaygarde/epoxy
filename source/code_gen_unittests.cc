@@ -20,8 +20,8 @@ TEST(CodeGenTest, Simple) {
         void* a1;
         int32_t a2;
       }
-      function world() -> int32_t;
-      function world2(void* a) -> void*;
+      function world() -> int32_t
+      function world2(void* a) -> void*
     }
   )~");
   ASSERT_EQ(driver_result, Driver::ParserResult::kSuccess);

@@ -23,8 +23,8 @@ TEST(SemaTest, DuplicateFunctionsCauseSemaError) {
   Driver driver;
   auto driver_result = driver.Parse(R"~(
     namespace foo {
-      function foo() -> void;
-      function foo(int32_t a, int32_t b) -> void*;
+      function foo() -> void
+      function foo(int32_t a, int32_t b) -> void*
     }
   )~");
   driver.PrettyPrintErrors(std::cerr);
@@ -94,7 +94,7 @@ TEST(SemaTest, EnumNamesInFunctionArgsMustBeKnown) {
   Driver driver;
   auto driver_result = driver.Parse(R"~(
     namespace foo {
-      function Foo(AbsentEnum val) -> void;
+      function Foo(AbsentEnum val) -> void
     }
   )~");
   driver.PrettyPrintErrors(std::cerr);
@@ -143,7 +143,7 @@ TEST(SemaTest, StructNamesInFunctionArgsMustBeKnown) {
   Driver driver;
   auto driver_result = driver.Parse(R"~(
     namespace foo {
-      function Foo(AbsentStruct* val) -> void;
+      function Foo(AbsentStruct* val) -> void
     }
   )~");
   driver.PrettyPrintErrors(std::cerr);
@@ -161,7 +161,7 @@ TEST(SemaTest, CannotReturnPointerToUnknownStruct) {
       enum AbsentStruct {
 
       }
-      function Foo() -> AbsentStruct*;
+      function Foo() -> AbsentStruct*
     }
   )~");
   driver.PrettyPrintErrors(std::cerr);
@@ -179,7 +179,7 @@ TEST(SemaTest, CannotReturnUnknownEnum) {
       struct AbsentEnum {
 
       }
-      function Foo() -> AbsentEnum;
+      function Foo() -> AbsentEnum
     }
   )~");
   driver.PrettyPrintErrors(std::cerr);

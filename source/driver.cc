@@ -45,8 +45,7 @@ void Driver::ReportParsingError(const class location& location,
 
 void Driver::PrettyPrintErrors(std::ostream& stream) const {
   for (const auto& error : errors_) {
-    stream << "Error: " << error.location << std::endl
-           << error.message << std::endl;
+    stream << "Error: " << error.location << " " << error.message << std::endl;
   }
 }
 

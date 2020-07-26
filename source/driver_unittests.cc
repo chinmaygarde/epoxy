@@ -100,7 +100,7 @@ TEST(DriverTest, CanParseFunctions) {
   auto result = driver.Parse(R"~(
 
     namespace foo {
-      function hello(int64_t quick, int32_t brown, int64_t fox) -> int64_t;
+      function hello(int64_t quick, int32_t brown, int64_t fox) -> int64_t
     }
 
     )~");
@@ -152,8 +152,8 @@ TEST(DriverTest, CanParseFunctionsVariations) {
   auto result = driver.Parse(R"~(
 
     namespace foo {
-      function hello(int64_t quick) -> int64_t;
-      function world() -> int64_t;
+      function hello(int64_t quick) -> int64_t
+      function world() -> int64_t
     }
 
     )~");
@@ -399,8 +399,8 @@ TEST(DriverTest, CanParsePointers) {
       struct Foo {
         int8_t* a1;
       }
-      function world() -> int64_t*;
-      function world2(uint64_t* a) -> int32_t*;
+      function world() -> int64_t*
+      function world2(uint64_t* a) -> int32_t*
     }
 
     )~");
@@ -465,8 +465,8 @@ TEST(DriverTest, CanParseVoidAndVoidPointer) {
         // we will error out in the sema pass instead.
         void a2;
       }
-      function world() -> void*;
-      function world2(void* a) -> void*;
+      function world() -> void*
+      function world2(void* a) -> void*
     }
 
     )~");
@@ -662,7 +662,7 @@ TEST(DriverTest, EnumsCanBeFunctionArguments) {
         Triangle,
       }
 
-      function DoSomething(ShapeType type) -> void;
+      function DoSomething(ShapeType type) -> void
     }
 
     )~");
@@ -725,7 +725,7 @@ TEST(DriverTest, StructPointersCanBeFunctionArguments) {
 
       }
 
-      function DoSomething(ShapeType* type) -> void;
+      function DoSomething(ShapeType* type) -> void
     }
 
     )~");
@@ -750,9 +750,9 @@ TEST(DriverTest, CanReturnUserDefinedType) {
 
       }
 
-      function DoSomething(ShapeType* type) -> ShapeType*;
+      function DoSomething(ShapeType* type) -> ShapeType*
 
-      function DoSomething2(ShapeType* type) -> Foo;
+      function DoSomething2(ShapeType* type) -> Foo
     }
 
     )~");
@@ -770,8 +770,8 @@ TEST(DriverTest, VoidReturnIsOptional) {
   auto result = driver.Parse(R"~(
 
     namespace foo {
-      function DoSomething();
-      function DoSomething2(int32_t a, int64_t b);
+      function DoSomething()
+      function DoSomething2(int32_t a, int64_t b)
     }
 
     )~");

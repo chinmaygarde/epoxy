@@ -62,30 +62,30 @@ struct Goodbye {
 // Functions may appear anywhere in a namespace (but not in a struct). They have the following syntax.
 // function <name>(<zero-or-more-arguments>) -> <return-type>.
 // For example:
-function SayHello() -> void;
+function SayHello() -> void
 
 // Function may accept primitives, pointers to primitive, enums and pointers to structs.
 // They may returns primitives, pointers and struct. The return type may be a pointer
 // to a primitive or struct as well. However, all enums are passed and returned by value.
 
-function GetIntPointer() -> int32_t*;
+function GetIntPointer() -> int32_t*
 
-function AddValues(int32_t* a, int32_t b) -> int32_t;
+function AddValues(int32_t* a, int32_t b) -> int32_t
 
-function CreateHello(HelloType type) -> Hello*;
+function CreateHello(HelloType type) -> Hello*
 
 // Cannot return hello by value.
 // function CreateHello() -> Hello <----- Error.
 
-function DestroyHello(Hello* hello) -> void;
+function DestroyHello(Hello* hello) -> void
 
 // Function that return void may just skip the -> void bit.
-function DoSomethingElse();
+function DoSomethingElse()
 
-function TakeHelloType() -> HelloType;
+function TakeHelloType() -> HelloType
 
 // Enums may not be returned by pointer.
-// function TakeHelloType() -> HelloType*; <------ Error.
+// function TakeHelloType() -> HelloType* <------ Error.
 
 } // namespace hello
 
