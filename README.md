@@ -42,9 +42,9 @@ The following primitives may be specified directly in an Epoxy definition file.
 Pointers to primitive values or structs may be specifed by prepending them with `*`.
 
 ```
-function GiveIntPointer() -> int8_t*;
-function CreateHello() -> Hello*;
-function DestroyHello(Hello*) -> void;
+function GiveIntPointer() -> int8_t*
+function CreateHello() -> Hello*
+function DestroyHello(Hello*) -> void
 ```
 
 ## Enums
@@ -76,7 +76,9 @@ struct Hello {
 Zero or more functions may appear anywhere in a `namespace` definition. . Across a namespace, function names may not be repeated.
 
 ```
-function AddTwoNumbers(int64_t a, int64_t b) -> int64_t;
+function AddTwoNumbers(int64_t a, int64_t b) -> int64_t
+// void returns are implicit.
+function ReturnVoid()
 ```
 
 
