@@ -15,8 +15,7 @@ else()
 endif()
 
 if(WINDOWS)
-  add_compile_definitions(NOMINMAX)
-  add_compile_definitions(YY_NO_UNISTD_H)
+  add_compile_definitions(NOMINMAX YY_NO_UNISTD_H _CRT_NONSTDC_NO_DEPRECATE)
 endif(WINDOWS)
 
 add_library(epoxy_lib

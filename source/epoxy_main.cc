@@ -58,7 +58,13 @@ static void DumpHelpString(std::ostream& stream) {
   stream << kHelpString << std::endl;
 }
 
-static std::optional<std::string> GetTemplateData(const CommandLine& args) {
+struct TemplateFileInfo {
+  std::string file_name;
+  std::string file_contents;
+};
+
+static std::optional<TemplateFileInfo> GetTemplateData(
+    const CommandLine& args) {
   auto template_file_flag = args.GetString("template-file");
 
   if (!template_file_flag.has_value()) {
@@ -74,7 +80,8 @@ static std::optional<std::string> GetTemplateData(const CommandLine& args) {
               << " to obtain code generation template data." << std::endl;
     return std::nullopt;
   }
-  return template_file_data;
+  return TemplateFileInfo{template_file_flag.value(),
+                          template_file_data.value()};
 }
 
 static std::optional<std::string> GetIDLData(const CommandLine& args) {
@@ -108,7 +115,7 @@ bool Main(const CommandLine& args) {
     return true;
   }
 
-  auto template_data = GetTemplateData(args);
+  const auto template_data = GetTemplateData(args);
 
   if (!template_data.has_value()) {
     std::cerr << "Could not figure out which template to render." << std::endl;
@@ -121,7 +128,7 @@ bool Main(const CommandLine& args) {
     return false;
   }
 
-  Driver driver;
+  Driver driver(template_data.value().file_name);
   const auto parse_result = driver.Parse(idl_data.value());
   if (parse_result != Driver::ParserResult::kSuccess) {
     std::cerr << "Errors when attempting to parse IDL: " << std::endl;
@@ -137,7 +144,7 @@ bool Main(const CommandLine& args) {
     return false;
   }
 
-  CodeGen code_gen(template_data.value());
+  CodeGen code_gen(template_data.value().file_contents);
 
   auto dump_template_data_flag = args.GetOption("template-data-dump");
   if (dump_template_data_flag.has_value() && dump_template_data_flag.value()) {

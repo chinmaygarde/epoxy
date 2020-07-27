@@ -6,10 +6,15 @@
 #include "scanner.h"
 
 #include <iostream>
+#include <sstream>
+#include <string>
 
 namespace epoxy {
 
-Driver::Driver() = default;
+Driver::Driver(std::string advisory_file_name)
+    : advisory_file_name_(std::move(advisory_file_name)) {
+  location_.initialize(&advisory_file_name_, 1u, 1u);
+}
 
 Driver::~Driver() = default;
 
@@ -45,12 +50,40 @@ void Driver::ReportParsingError(const class location& location,
 
 void Driver::PrettyPrintErrors(std::ostream& stream) const {
   for (const auto& error : errors_) {
-    stream << "Error: " << error.location << " " << error.message << std::endl;
+    const auto& error_begin = error.location.begin;
+    stream << *error_begin.filename << ":" << error_begin.line << ":"
+           << error_begin.column << " Error: " << error.message << std::endl;
   }
 }
 
 const std::vector<Namespace>& Driver::GetNamespaces() const {
   return namespaces_;
+}
+
+location Driver::GetCurrentLocation() const {
+  return location_;
+}
+
+void Driver::BumpCurrentLocation(const char* c_text) {
+  std::string text(c_text);
+  std::stringstream stream(text);
+  std::string line;
+  std::vector<std::string> lines;
+  while (std::getline(stream, line)) {
+    lines.emplace_back(std::move(line));
+  }
+  if (lines.empty()) {
+    return;
+  }
+  location_.step();
+  if (lines.size() > 1u) {
+    // A newline was inserted.
+    location_.lines(lines.size() - 1u);
+    location_.columns(lines.back().size());
+  } else {
+    // An existing line was extended.
+    location_.columns(text.size());
+  }
 }
 
 }  // namespace epoxy

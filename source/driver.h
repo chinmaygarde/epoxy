@@ -19,7 +19,7 @@ class Driver {
     kOutOfMemory,
   };
 
-  Driver();
+  Driver(std::string advisory_file_name = "main.epoxy");
 
   ~Driver();
 
@@ -31,9 +31,9 @@ class Driver {
 
   void PrettyPrintErrors(std::ostream& stream) const;
 
-  // TODO: Accessed by epoxy_lex. This should be a private with a friend
-  // function.
-  location loc;
+  location GetCurrentLocation() const;
+
+  void BumpCurrentLocation(const char* text);
 
   void ReportParsingError(const class location& location,
                           const std::string& message);
@@ -45,6 +45,8 @@ class Driver {
   };
   std::vector<Namespace> namespaces_;
   std::vector<Error> errors_;
+  std::string advisory_file_name_;
+  location location_;
 
   EPOXY_DISALLOW_COPY_AND_ASSIGN(Driver);
 };

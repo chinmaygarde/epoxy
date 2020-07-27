@@ -9,12 +9,13 @@
 #include "types.h"
 #include "decls.h"
 
-#define CURRENT_LOC driver.loc
+#define CURRENT_LOC driver.GetCurrentLocation()
+
+#define YY_USER_ACTION driver.BumpCurrentLocation(yytext);
 
 %}
 
 %option 8bit noyywrap nounput batch debug noinput never-interactive reentrant
-
 %option outfile="lexer.cc"
 %option header-file="lexer.h"
 %option prefix="epoxy_"
@@ -25,10 +26,6 @@ A                       [a-zA-Z_0-9]
 WS                      [ \t\v\n\f]
 
 %%
-
-%{
-    CURRENT_LOC.step();
-%}
 
 <<EOF>>                return epoxy::Parser::make_END(CURRENT_LOC);
 

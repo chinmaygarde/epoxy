@@ -5,6 +5,9 @@
 
 #include "driver.h"
 
+#include <sstream>
+#include <string>
+
 namespace epoxy {
 namespace testing {
 
@@ -788,6 +791,24 @@ TEST(DriverTest, VoidReturnIsOptional) {
       driver.GetNamespaces()[0].GetFunctions()[1].GetReturnType(),
       Primitive::kVoid));
   ASSERT_FALSE(driver.GetNamespaces()[0].GetFunctions()[1].ReturnsPointer());
+}
+
+TEST(DriverTest, ErrorLocationsAreCorrect) {
+  Driver driver;
+  auto result = driver.Parse(R"~(// Comment
+    namespace foo {
+    ;
+      function DoSomething()
+      function DoSomething2(int32_t a, int64_t b)
+    }
+
+    )~");
+
+  driver.PrettyPrintErrors(std::cerr);
+  ASSERT_EQ(result, Driver::ParserResult::kSyntaxError);
+  std::stringstream stream;
+  driver.PrettyPrintErrors(stream);
+  ASSERT_NE(stream.str().find_first_of("3:5"), std::string::npos);
 }
 
 }  // namespace testing
