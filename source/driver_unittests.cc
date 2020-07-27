@@ -796,6 +796,12 @@ TEST(DriverTest, VoidReturnIsOptional) {
 TEST(DriverTest, ErrorLocationsAreCorrect) {
   Driver driver;
   auto result = driver.Parse(R"~(// Comment
+    // More stuff
+    // Yet more comments
+
+
+
+
     namespace foo {
     ;
       function DoSomething()
@@ -808,7 +814,7 @@ TEST(DriverTest, ErrorLocationsAreCorrect) {
   ASSERT_EQ(result, Driver::ParserResult::kSyntaxError);
   std::stringstream stream;
   driver.PrettyPrintErrors(stream);
-  ASSERT_NE(stream.str().find_first_of("3:5"), std::string::npos);
+  ASSERT_NE(stream.str().find("9:5"), std::string::npos);
 }
 
 }  // namespace testing

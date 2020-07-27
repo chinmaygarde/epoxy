@@ -52,7 +52,7 @@ TEST(CodeGenTest, CanCreateJSONDump) {
   ASSERT_EQ(result, Sema::Result::kSuccess);
   auto code_gen = CodeGen({});
   auto json_dump = code_gen.GenerateTemplateDataJSON(sema.GetNamespaces());
-  ASSERT_NE(json_dump.find_first_of("epoxy_version"), std::string::npos);
+  ASSERT_NE(json_dump.find("epoxy_version"), std::string::npos);
 }
 
 }  // namespace testing
