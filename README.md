@@ -1,8 +1,8 @@
 # Epoxy
 
-![Linux](https://github.com/chinmaygarde/epoxy/workflows/Linux/badge.svg)
-![Mac](https://github.com/chinmaygarde/epoxy/workflows/Mac/badge.svg)
-![Windows](https://github.com/chinmaygarde/epoxy/workflows/Windows/badge.svg)
+[![Linux](https://github.com/chinmaygarde/epoxy/workflows/Linux/badge.svg)](https://github.com/chinmaygarde/epoxy/actions?query=workflow%3ALinux)
+[![Mac](https://github.com/chinmaygarde/epoxy/workflows/Mac/badge.svg)](https://github.com/chinmaygarde/epoxy/actions?query=workflow%3AMac)
+[![Windows](https://github.com/chinmaygarde/epoxy/workflows/Windows/badge.svg)](https://github.com/chinmaygarde/epoxy/actions?query=workflow%3AWindows)
 
 This is just an experiment. Nothing to see here yet.
 
