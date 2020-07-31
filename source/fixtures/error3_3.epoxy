@@ -1,7 +1,6 @@
-
 // Comments start with // and terminate at the end of the line. There are no
 // multiple comments.
-
+  ;
 // All structs, functions and enums must be within a namespace.
 // A single .epoxy file can contain multiple namespaces and the same namespace
 // can be declared multiple times. Before code generation, the namespace items

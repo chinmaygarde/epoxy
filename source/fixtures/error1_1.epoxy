@@ -1,0 +1,90 @@
+;
+// Comments start with // and terminate at the end of the line. There are no
+// multiple comments.
+
+// All structs, functions and enums must be within a namespace.
+// A single .epoxy file can contain multiple namespaces and the same namespace
+// can be declared multiple times. Before code generation, the namespace items
+// will be combined.
+namespace hello {
+
+// Enums are specified just like you would in C/C++
+enum HelloType {
+  Simple,
+  LongWinded,
+}
+
+// Strucs are specified just like you would in C/C++;
+struct Hello {
+  int32_t cookie;
+
+  // Notice we used the int32_t primitive. There are the following built in primitives.
+  // int8_t: A signed 8-bit integer.
+  // int16_t: A signed 16-bit integer.
+  // int32_t: A signed 32-bit integer.
+  // int64_t: A signed 64-bit integer.
+  // uint8_t: An unsigned 8-bit integer.
+  // uint16_t: An unsigned 16-bit integer.
+  // uint32_t: An unsigned 32-bit integer.
+  // uint64_t: An unsigned 64-bit integer.
+  // double: A 64-bit double.
+  // float: A 32-bit float.
+  // void: A void type.
+
+  // You can specify pointers to these primitives.
+  int64_t *pointer_to_int64;
+
+  // You can specify a pointer to void.
+  void *an_opaque_pointer;
+
+  // But not just a void type.
+  // void this_will_cause_an_error; <---- Error.
+
+  // You can also specify a pointer to another struct. Notice how you can define the struct
+  // later in the file. But the struct must be defined however and must be known
+  // before code generation.
+  Goodbye *goodbye;
+
+  // You may not specify a struct member by value.
+  // Goodbye not_possible; <------ Error.
+
+  // Known enums may be members of a struct.
+  HelloType type;
+
+  // Pointers to enums are not supported.
+  // HelloType *type; <---- Error.
+}
+
+struct Goodbye {
+
+}
+
+// Functions may appear anywhere in a namespace (but not in a struct). They have the following syntax.
+// function <name>(<zero-or-more-arguments>) -> <return-type>.
+// For example:
+function SayHello() -> void
+
+// Function may accept primitives, pointers to primitive, enums and pointers to structs.
+// They may returns primitives, pointers and struct. The return type may be a pointer
+// to a primitive or struct as well. However, all enums are passed and returned by value.
+
+function GetIntPointer() -> int32_t*
+
+function AddValues(int32_t* a, int32_t b) -> int32_t
+
+function CreateHello(HelloType type) -> Hello*
+
+// Cannot return hello by value.
+// function CreateHello() -> Hello <----- Error.
+
+function DestroyHello(Hello* hello) -> void
+
+// Function that return void may just skip the -> void bit.
+function DoSomethingElse()
+
+function TakeHelloType() -> HelloType
+
+// Enums may not be returned by pointer.
+// function TakeHelloType() -> HelloType* <------ Error.
+
+} // namespace hello

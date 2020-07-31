@@ -4,6 +4,8 @@
 #include <gtest/gtest.h>
 
 #include "driver.h"
+#include "file.h"
+#include "fixture.h"
 
 #include <sstream>
 #include <string>
@@ -815,6 +817,81 @@ TEST(DriverTest, ErrorLocationsAreCorrect) {
   std::stringstream stream;
   driver.PrettyPrintErrors(stream);
   ASSERT_NE(stream.str().find("9:5"), std::string::npos);
+}
+
+TEST(DriverTest, ErrorLocationsAreCorrectFile1_1) {
+  Driver driver;
+
+  auto source = ReadFileAsString(EPOXY_FIXTURES_LOCATION "error1_1.epoxy");
+  ASSERT_TRUE(source.has_value());
+  auto result = driver.Parse(source.value());
+
+  driver.PrettyPrintErrors(std::cerr);
+  std::cerr.flush();
+  ASSERT_EQ(result, Driver::ParserResult::kSyntaxError);
+  std::stringstream stream;
+  driver.PrettyPrintErrors(stream);
+  ASSERT_NE(stream.str().find("1:1 Error"), std::string::npos);
+}
+
+TEST(DriverTest, ErrorLocationsAreCorrectFile3_3) {
+  Driver driver;
+
+  auto source = ReadFileAsString(EPOXY_FIXTURES_LOCATION "error3_3.epoxy");
+  ASSERT_TRUE(source.has_value());
+  auto result = driver.Parse(source.value());
+
+  driver.PrettyPrintErrors(std::cerr);
+  std::cerr.flush();
+  ASSERT_EQ(result, Driver::ParserResult::kSyntaxError);
+  std::stringstream stream;
+  driver.PrettyPrintErrors(stream);
+  ASSERT_NE(stream.str().find("3:3 Error"), std::string::npos);
+}
+
+TEST(DriverTest, ErrorLocationsAreCorrectFile3_1) {
+  Driver driver;
+
+  auto source = ReadFileAsString(EPOXY_FIXTURES_LOCATION "error3_1.epoxy");
+  ASSERT_TRUE(source.has_value());
+  auto result = driver.Parse(source.value());
+
+  driver.PrettyPrintErrors(std::cerr);
+  std::cerr.flush();
+  ASSERT_EQ(result, Driver::ParserResult::kSyntaxError);
+  std::stringstream stream;
+  driver.PrettyPrintErrors(stream);
+  ASSERT_NE(stream.str().find("3:1 Error"), std::string::npos);
+}
+
+TEST(DriverTest, ErrorLocationsAreCorrectFile51_12) {
+  Driver driver;
+
+  auto source = ReadFileAsString(EPOXY_FIXTURES_LOCATION "error51_12.epoxy");
+  ASSERT_TRUE(source.has_value());
+  auto result = driver.Parse(source.value());
+
+  driver.PrettyPrintErrors(std::cerr);
+  std::cerr.flush();
+  ASSERT_EQ(result, Driver::ParserResult::kSyntaxError);
+  std::stringstream stream;
+  driver.PrettyPrintErrors(stream);
+  ASSERT_NE(stream.str().find("51:12 Error"), std::string::npos);
+}
+
+TEST(DriverTest, ErrorLocationsAreCorrectFile84_24) {
+  Driver driver;
+
+  auto source = ReadFileAsString(EPOXY_FIXTURES_LOCATION "error84_24.epoxy");
+  ASSERT_TRUE(source.has_value());
+  auto result = driver.Parse(source.value());
+
+  driver.PrettyPrintErrors(std::cerr);
+  std::cerr.flush();
+  ASSERT_EQ(result, Driver::ParserResult::kSyntaxError);
+  std::stringstream stream;
+  driver.PrettyPrintErrors(stream);
+  ASSERT_NE(stream.str().find("84:24 Error"), std::string::npos);
 }
 
 }  // namespace testing

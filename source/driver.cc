@@ -13,7 +13,7 @@ namespace epoxy {
 
 Driver::Driver(std::string advisory_file_name)
     : advisory_file_name_(std::move(advisory_file_name)) {
-  location_.initialize(&advisory_file_name_, 1u, 1u);
+  location_.initialize(&advisory_file_name_);
 }
 
 Driver::~Driver() = default;
@@ -64,26 +64,27 @@ location Driver::GetCurrentLocation() const {
   return location_;
 }
 
+static size_t GetNewlinesInString(const std::string& string) {
+  return std::count_if(string.begin(), string.end(),
+                       [](const auto& c) { return c == '\n'; });
+}
+
+static size_t CharsAfterLastNewline(const std::string& string) {
+  auto last = string.find_last_of('\n');
+  if (last == std::string::npos) {
+    return string.size();
+  } else {
+    return string.size() - last - 1u;
+  }
+}
+
 void Driver::BumpCurrentLocation(const char* c_text) {
   std::string text(c_text);
-  std::stringstream stream(text);
-  std::string line;
-  std::vector<std::string> lines;
-  while (std::getline(stream, line)) {
-    lines.emplace_back(std::move(line));
-  }
-  if (lines.empty()) {
-    return;
-  }
+
   location_.step();
-  if (lines.size() > 1u) {
-    // A newline was inserted.
-    location_.lines(lines.size() - 1u);
-    location_.columns(lines.back().size());
-  } else {
-    // An existing line was extended.
-    location_.columns(text.size());
-  }
+
+  location_.lines(GetNewlinesInString(text));
+  location_.columns(CharsAfterLastNewline(text));
 }
 
 }  // namespace epoxy
