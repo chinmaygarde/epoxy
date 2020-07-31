@@ -58,13 +58,12 @@ static void DumpHelpString(std::ostream& stream) {
   stream << kHelpString << std::endl;
 }
 
-struct TemplateFileInfo {
+struct FileInfo {
   std::string file_name;
   std::string file_contents;
 };
 
-static std::optional<TemplateFileInfo> GetTemplateData(
-    const CommandLine& args) {
+static std::optional<FileInfo> GetTemplateData(const CommandLine& args) {
   auto template_file_flag = args.GetString("template-file");
 
   if (!template_file_flag.has_value()) {
@@ -80,11 +79,10 @@ static std::optional<TemplateFileInfo> GetTemplateData(
               << " to obtain code generation template data." << std::endl;
     return std::nullopt;
   }
-  return TemplateFileInfo{template_file_flag.value(),
-                          template_file_data.value()};
+  return FileInfo{template_file_flag.value(), template_file_data.value()};
 }
 
-static std::optional<std::string> GetIDLData(const CommandLine& args) {
+static std::optional<FileInfo> GetIDLData(const CommandLine& args) {
   auto idl_flag = args.GetString("idl");
 
   if (!idl_flag.has_value()) {
@@ -99,7 +97,7 @@ static std::optional<std::string> GetIDLData(const CommandLine& args) {
     return std::nullopt;
   }
 
-  return idl_data.value();
+  return FileInfo{idl_flag.value(), idl_data.value()};
 }
 
 bool Main(const CommandLine& args) {
@@ -128,11 +126,11 @@ bool Main(const CommandLine& args) {
     return false;
   }
 
-  Driver driver(template_data.value().file_name);
-  const auto parse_result = driver.Parse(idl_data.value());
+  Driver driver(idl_data.value().file_name);
+  const auto parse_result = driver.Parse(idl_data.value().file_contents);
   if (parse_result != Driver::ParserResult::kSuccess) {
     std::cerr << "Errors when attempting to parse IDL: " << std::endl;
-    driver.PrettyPrintErrors(std::cerr, idl_data.value());
+    driver.PrettyPrintErrors(std::cerr, idl_data.value().file_contents);
     return false;
   }
 
