@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>scopeName</key>
+  <string>source.epoxy</string>
+  <key>uuid</key>
+  <string>93b10097-e84c-4868-85da-8f5a9ade5c67</string>
+  <key>fileTypes</key>
+  <array>
+    <string>epoxy</string>
+  </array>
+  <key>name</key>
+  <string>Epoxy</string>
+  <key>patterns</key>
+  <array>
+    <dict>
+      <key>name</key>
+      <string>comment.line.double-slash.epoxy</string>
+      <key>match</key>
+      <string>//.*</string>
+    </dict>
+    <dict>
+      <key>name</key>
+      <string>keyword.other.epoxy</string>
+      <key>match</key>
+      <string>enum|struct|namespace|function</string>
+    </dict>
+    <dict>
+      <key>name</key>
+      <string>keyword.other.epoxy</string>
+      <key>match</key>
+      <string>->|\*</string>
+    </dict>
+    <dict>
+      <key>name</key>
+      <string>support.type.epoxy</string>
+      <key>match</key>
+      <string>int8_t|int16_t|int32_t|int64_t|uint8_t|uint16_t|uint32_t|uint64_t|double|float|void</string>
+    </dict>
+  </array>
+</dict>
+</plist>
