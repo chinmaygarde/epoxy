@@ -831,7 +831,7 @@ TEST(DriverTest, ErrorLocationsAreCorrectFile1_1) {
   ASSERT_EQ(result, Driver::ParserResult::kSyntaxError);
   std::stringstream stream;
   driver.PrettyPrintErrors(stream);
-  ASSERT_NE(stream.str().find("1:1 Error"), std::string::npos);
+  ASSERT_NE(stream.str().find("1:1: error"), std::string::npos);
 }
 
 TEST(DriverTest, ErrorLocationsAreCorrectFile3_3) {
@@ -846,7 +846,7 @@ TEST(DriverTest, ErrorLocationsAreCorrectFile3_3) {
   ASSERT_EQ(result, Driver::ParserResult::kSyntaxError);
   std::stringstream stream;
   driver.PrettyPrintErrors(stream);
-  ASSERT_NE(stream.str().find("3:3 Error"), std::string::npos);
+  ASSERT_NE(stream.str().find("3:3: error"), std::string::npos);
 }
 
 TEST(DriverTest, ErrorLocationsAreCorrectFile3_1) {
@@ -861,7 +861,7 @@ TEST(DriverTest, ErrorLocationsAreCorrectFile3_1) {
   ASSERT_EQ(result, Driver::ParserResult::kSyntaxError);
   std::stringstream stream;
   driver.PrettyPrintErrors(stream);
-  ASSERT_NE(stream.str().find("3:1 Error"), std::string::npos);
+  ASSERT_NE(stream.str().find("3:1: error"), std::string::npos);
 }
 
 TEST(DriverTest, ErrorLocationsAreCorrectFile51_12) {
@@ -876,7 +876,7 @@ TEST(DriverTest, ErrorLocationsAreCorrectFile51_12) {
   ASSERT_EQ(result, Driver::ParserResult::kSyntaxError);
   std::stringstream stream;
   driver.PrettyPrintErrors(stream);
-  ASSERT_NE(stream.str().find("51:12 Error"), std::string::npos);
+  ASSERT_NE(stream.str().find("51:12: error"), std::string::npos);
 }
 
 TEST(DriverTest, ErrorLocationsAreCorrectFile84_24) {
@@ -891,7 +891,7 @@ TEST(DriverTest, ErrorLocationsAreCorrectFile84_24) {
   ASSERT_EQ(result, Driver::ParserResult::kSyntaxError);
   std::stringstream stream;
   driver.PrettyPrintErrors(stream);
-  ASSERT_NE(stream.str().find("84:24 Error"), std::string::npos);
+  ASSERT_NE(stream.str().find("84:24: error"), std::string::npos);
 }
 
 TEST(DriverTest, ErrorLocationsAreCorrectFilePretty) {
@@ -900,7 +900,6 @@ TEST(DriverTest, ErrorLocationsAreCorrectFilePretty) {
   auto source = ReadFileAsString(EPOXY_FIXTURES_LOCATION "error_pretty.epoxy");
   ASSERT_TRUE(source.has_value());
   auto result = driver.Parse(source.value());
-
   driver.PrettyPrintErrors(std::cerr, source.value());
   std::cerr.flush();
   ASSERT_EQ(result, Driver::ParserResult::kSyntaxError);

@@ -78,7 +78,7 @@ void Driver::PrettyPrintErrors(std::ostream& stream,
   for (const auto& error : errors_) {
     const auto& error_begin = error.location.begin;
     stream << *error_begin.filename << ":" << error_begin.line << ":"
-           << error_begin.column << " Error: " << error.message << std::endl;
+           << error_begin.column << ": error: " << error.message << std::endl;
     UnderscoreErrorInText(stream, error.location, original_text);
   }
 }
