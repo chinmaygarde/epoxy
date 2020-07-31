@@ -29,7 +29,8 @@ class Driver {
 
   void AddNamespace(Namespace ns);
 
-  void PrettyPrintErrors(std::ostream& stream) const;
+  void PrettyPrintErrors(std::ostream& stream,
+                         const std::string& original_text = "") const;
 
   location GetCurrentLocation() const;
 

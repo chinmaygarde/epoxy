@@ -3,8 +3,10 @@
 
 #include "driver.h"
 
+#include "file.h"
 #include "scanner.h"
 
+#include <algorithm>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -48,11 +50,36 @@ void Driver::ReportParsingError(const class location& location,
   errors_.emplace_back(Driver::Error{location, message});
 }
 
-void Driver::PrettyPrintErrors(std::ostream& stream) const {
+static void UnderscoreErrorInText(std::ostream& stream,
+                                  const location& position,
+                                  const std::string& original_text) {
+  if (original_text.empty()) {
+    return;
+  }
+  auto line = GetLineInString(original_text, position.begin.line);
+  if (!line.has_value()) {
+    return;
+  }
+
+  std::string pad(2u, ' ');
+
+  stream << pad << line.value() << std::endl;
+
+  const auto column =
+      std::max<size_t>(static_cast<size_t>(position.begin.column), 1u);
+
+  std::string bar(column - 1, '-');
+
+  stream << pad << bar << "^" << std::endl;
+}
+
+void Driver::PrettyPrintErrors(std::ostream& stream,
+                               const std::string& original_text) const {
   for (const auto& error : errors_) {
     const auto& error_begin = error.location.begin;
     stream << *error_begin.filename << ":" << error_begin.line << ":"
            << error_begin.column << " Error: " << error.message << std::endl;
+    UnderscoreErrorInText(stream, error.location, original_text);
   }
 }
 

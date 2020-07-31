@@ -132,7 +132,7 @@ bool Main(const CommandLine& args) {
   const auto parse_result = driver.Parse(idl_data.value());
   if (parse_result != Driver::ParserResult::kSuccess) {
     std::cerr << "Errors when attempting to parse IDL: " << std::endl;
-    driver.PrettyPrintErrors(std::cerr);
+    driver.PrettyPrintErrors(std::cerr, idl_data.value());
     return false;
   }
 

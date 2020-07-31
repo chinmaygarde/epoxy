@@ -60,7 +60,6 @@ std::string StringReplaceAllOccurrances(const std::string& string,
   while (true) {
     auto found = string.find(pattern, offset);
 
-    // std::string::npos for second argument means copy to end.
     stream << string.substr(offset, found - offset);
 
     if (found == std::string::npos) {
@@ -73,6 +72,37 @@ std::string StringReplaceAllOccurrances(const std::string& string,
   }
 
   return stream.str();
+}
+
+std::optional<std::string> GetLineInString(const std::string& string,
+                                           size_t line) {
+  if (line == 0) {
+    return std::nullopt;
+  }
+  size_t current_line = 0u;
+  size_t found = 0u;
+  size_t offset = 0u;
+  while (true) {
+    found = string.find_first_of('\n', offset);
+
+    current_line++;
+
+    if (found == std::string::npos) {
+      if (current_line == line) {
+        break;
+      } else {
+        return std::nullopt;
+      }
+    }
+
+    if (current_line == line) {
+      break;
+    }
+
+    offset = found + 1;
+  }
+
+  return string.substr(offset, found - offset);
 }
 
 }  // namespace epoxy

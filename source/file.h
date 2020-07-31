@@ -19,4 +19,7 @@ std::string StringReplaceAllOccurrances(const std::string& string,
                                         const std::string& pattern,
                                         const std::string& replacement);
 
+std::optional<std::string> GetLineInString(const std::string& string,
+                                           size_t line);
+
 }  // namespace epoxy

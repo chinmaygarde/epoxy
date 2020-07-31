@@ -125,5 +125,60 @@ TEST(FileTest, CanHomogenizeNewlines) {
   }
 }
 
+TEST(FileTest, CanGetLineInString) {
+  {
+    const std::string string = "\nA\n";
+    auto found = GetLineInString(string, 1);
+    ASSERT_TRUE(found.has_value());
+    ASSERT_EQ(found.value(), "");
+  }
+
+  {
+    const std::string string = "\nA\n";
+    auto found = GetLineInString(string, 2);
+    ASSERT_TRUE(found.has_value());
+    ASSERT_EQ(found.value(), "A");
+  }
+
+  {
+    const std::string string = "\nA\n";
+    auto found = GetLineInString(string, 3);
+    ASSERT_TRUE(found.has_value());
+    ASSERT_EQ(found.value(), "");
+  }
+
+  {
+    const std::string string = "\nA\n";
+    auto found = GetLineInString(string, 4);
+    ASSERT_FALSE(found.has_value());
+  }
+
+  {
+    const std::string string = "";
+    auto found = GetLineInString(string, 1);
+    ASSERT_TRUE(found.has_value());
+    ASSERT_EQ(found.value(), "");
+  }
+
+  {
+    const std::string string = "";
+    auto found = GetLineInString(string, 2);
+    ASSERT_FALSE(found.has_value());
+  }
+
+  {
+    const std::string string = "asdas";
+    auto found = GetLineInString(string, 0);
+    ASSERT_FALSE(found.has_value());
+  }
+
+  {
+    const std::string string = "asdas\nlaskd\nasda\naksjdhaskd";
+    auto found = GetLineInString(string, 4);
+    ASSERT_TRUE(found.has_value());
+    ASSERT_EQ(found.value(), "aksjdhaskd");
+  }
+}
+
 }  // namespace testing
 }  // namespace epoxy

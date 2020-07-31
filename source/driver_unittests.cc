@@ -894,5 +894,20 @@ TEST(DriverTest, ErrorLocationsAreCorrectFile84_24) {
   ASSERT_NE(stream.str().find("84:24 Error"), std::string::npos);
 }
 
+TEST(DriverTest, ErrorLocationsAreCorrectFilePretty) {
+  Driver driver;
+
+  auto source = ReadFileAsString(EPOXY_FIXTURES_LOCATION "error_pretty.epoxy");
+  ASSERT_TRUE(source.has_value());
+  auto result = driver.Parse(source.value());
+
+  driver.PrettyPrintErrors(std::cerr, source.value());
+  std::cerr.flush();
+  ASSERT_EQ(result, Driver::ParserResult::kSyntaxError);
+  std::stringstream stream;
+  driver.PrettyPrintErrors(stream, source.value());
+  ASSERT_NE(stream.str().find("-----------------------^"), std::string::npos);
+}
+
 }  // namespace testing
 }  // namespace epoxy
