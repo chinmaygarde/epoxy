@@ -6,6 +6,7 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <string>
 
 namespace epoxy {
 
@@ -22,7 +23,7 @@ std::optional<std::string> ReadFileAsString(const std::string& file_path) {
     std::cerr << "Could not read the whole file " << file_path << std::endl;
     return std::nullopt;
   }
-  return stream.str();
+  return HomogenizeNewlines(stream.str());
 }
 
 bool OverwriteFileWithStringData(const std::string& file_path,
@@ -39,6 +40,39 @@ bool OverwriteFileWithStringData(const std::string& file_path,
     return false;
   }
   return true;
+}
+
+std::string HomogenizeNewlines(const std::string& string) {
+  return StringReplaceAllOccurrances(string, "\r\n", "\n");
+}
+
+std::string StringReplaceAllOccurrances(const std::string& string,
+                                        const std::string& pattern,
+                                        const std::string& replacement) {
+  if (pattern.empty()) {
+    return string;
+  }
+
+  std::stringstream stream;
+
+  size_t offset = 0u;
+
+  while (true) {
+    auto found = string.find(pattern, offset);
+
+    // std::string::npos for second argument means copy to end.
+    stream << string.substr(offset, found - offset);
+
+    if (found == std::string::npos) {
+      break;
+    }
+
+    stream << replacement;
+
+    offset = found + pattern.size();
+  }
+
+  return stream.str();
 }
 
 }  // namespace epoxy

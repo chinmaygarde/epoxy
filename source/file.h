@@ -13,4 +13,10 @@ std::optional<std::string> ReadFileAsString(const std::string& file_path);
 bool OverwriteFileWithStringData(const std::string& file_path,
                                  std::string data);
 
+std::string HomogenizeNewlines(const std::string& string);
+
+std::string StringReplaceAllOccurrances(const std::string& string,
+                                        const std::string& pattern,
+                                        const std::string& replacement);
+
 }  // namespace epoxy
