@@ -152,6 +152,8 @@ This project can be compiled on Windows, Linux, or, Mac. On the host, the follow
 This is an extremely straightforward CMake project. The instructions to build all targets including unit-tests are:
 
 * Make sure the build host satisfies all [build requirements](#build-requirements).
+* Update Git submodule to make sure all dependencies are pulled in.
+  * `git submodule update --init --recursive`
 * Create build directory and move into it.
   * `mkdir build`
   * `cd build`

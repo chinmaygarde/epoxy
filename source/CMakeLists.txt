@@ -1,3 +1,5 @@
+# This source file is part of Epoxy licensed under the MIT License.
+# See LICENSE.md file for details.
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
   add_compile_options(

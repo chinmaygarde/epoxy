@@ -1,3 +1,6 @@
+# This source file is part of Epoxy licensed under the MIT License.
+# See LICENSE.md file for details.
+
 cmake_minimum_required(VERSION 3.0)
 
 project(epoxy_example)
