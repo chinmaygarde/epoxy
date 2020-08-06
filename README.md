@@ -4,7 +4,7 @@
 [![Mac](https://github.com/chinmaygarde/epoxy/workflows/Mac/badge.svg)](https://github.com/chinmaygarde/epoxy/actions?query=workflow%3AMac)
 [![Windows](https://github.com/chinmaygarde/epoxy/workflows/Windows/badge.svg)](https://github.com/chinmaygarde/epoxy/actions?query=workflow%3AWindows)
 
-Epoxy is an IDL and Code Generator for Dart FFI Bindings.
+Epoxy is an IDL and Code Generator for [Dart FFI Bindings](https://dart.dev/guides/libraries/c-interop).
 
 ![Epoxy Demo](example/demo.gif)
 
@@ -111,6 +111,8 @@ enum MyEnum {
 }
 ```
 
+Enums will be sugared and desugared automatically.
+
 ## Structs
 
 Within a namespace, there may be one or more `struct` definitions. Across a namespace, the enum or struct names may not be repeated.
@@ -125,7 +127,7 @@ struct Hello {
 
 ## Functions
 
-Zero or more functions may appear anywhere in a `namespace` definition. . Across a namespace, function names may not be repeated.
+Zero or more functions may appear anywhere in a `namespace` definition. Across a namespace, function names may not be repeated.
 
 ```
 function AddTwoNumbers(int64_t a, int64_t b) -> int64_t
