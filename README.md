@@ -8,6 +8,10 @@ Epoxy is an IDL and Code Generator for Dart FFI Bindings.
 
 ![Epoxy Demo](example/demo.gif)
 
+# Getting Started
+
+Epoxy is a very young project and there are currently no packaged releases. You will have to build the build the generator yourself following the [build instructions](#build-instructions). The [example/](example/) directory contains a fully setup CMake project that intergrates the code generator into the build system. The steps to integrate Epoxy into any other build system should be similar.
+
 # CLI Reference
 
 ```
@@ -130,8 +134,28 @@ function ReturnVoid()
 
 # Build Requirements
 
-This project can be compiled on Windows, Linux, or, Mac. On the host, the follow dependencies are required. The `Dockerfile` provided in the project root may also be used to construct an image capable of building this project.
+This project can be compiled on Windows, Linux, or, Mac. On the host, the following dependencies are required. Take a look at the [CI scripts](.github/workflows/) to see how the project is built on each platform in case you get stuck.
 
-* A C++ 17 Compiler.
+* A C++ 17 Compiler: This project builds fine with recent version of GCC, Clang and MSVC.
+* CMake 3.0 or higher.
 * [Flex 2.6.3 or higher](https://github.com/westes/flex).
 * [Bison 3.3.2 or higher](https://www.gnu.org/software/bison/).
+
+**Note:** macOS ships with very old versions of Flex and Bison. These are not suitable for Epoxy. If you are not building these from source, Homebrew contains sufficiently new versions of these dependencies. 
+
+# Build Instructions
+
+This is an extremely straightforward CMake project. The instructions to build all targets including unit-tests are:
+
+* Make sure the build host satisfies all [build requirements](#build-requirements).
+* Create build directory and move into it.
+  * `mkdir build`
+  * `cd build`
+* Invoke CMake to generate resources for the target build system. I like to use Ninja but Make, Xcode, Visual Studio, etc. work fine as well.
+  * `cmake ../ -G Ninja` (Make is the default)
+* Build the default targets.
+  * `cmake --build .`
+* Run the unit-test suite.
+  * `ctest -VV`
+
+You should now have the Epoxy command line code generator. Take a look at the [example/](example/) directory for a project that intergrates invoking Epoxy for code generation as an interediate step in a CMake target.
