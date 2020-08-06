@@ -12,6 +12,8 @@ Epoxy is an IDL and Code Generator for Dart FFI Bindings.
 
 Epoxy is a very young project and there are currently no packaged releases. You will have to build the build the generator yourself following the [build instructions](#build-instructions). The [example/](example/) directory contains a fully setup CMake project that intergrates the code generator into the build system. The steps to integrate Epoxy into any other build system should be similar.
 
+**Tip:** The [editor](editor/) directory contains a Textmate language definition for `.epoxy` files that should provide rudimentary syntax highlighting in most editors.
+
 # CLI Reference
 
 ```
@@ -141,7 +143,7 @@ This project can be compiled on Windows, Linux, or, Mac. On the host, the follow
 * [Flex 2.6.3 or higher](https://github.com/westes/flex).
 * [Bison 3.3.2 or higher](https://www.gnu.org/software/bison/).
 
-**Note:** macOS ships with very old versions of Flex and Bison. These are not suitable for Epoxy. If you are not building these from source, Homebrew contains sufficiently new versions of these dependencies. 
+**Note:** macOS ships with very old versions of Flex and Bison. These are not suitable for Epoxy. If you are not building these from source, Homebrew contains sufficiently new versions of these dependencies.
 
 # Build Instructions
 
