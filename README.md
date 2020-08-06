@@ -26,10 +26,6 @@ Usage:
     epoxy  --output <output file path>
            --idl    <Epoxy IDL file path>
            [--template-file <Template File Path>]
-           [--template-default-cxx]
-           [--template-default-dart]
-           [--template-default-cxx-dump]
-           [--template-default-dart-dump]
            [--template-data-dump]
            [--help]
            [--version]
