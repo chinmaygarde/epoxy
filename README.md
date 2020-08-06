@@ -4,7 +4,53 @@
 [![Mac](https://github.com/chinmaygarde/epoxy/workflows/Mac/badge.svg)](https://github.com/chinmaygarde/epoxy/actions?query=workflow%3AMac)
 [![Windows](https://github.com/chinmaygarde/epoxy/workflows/Windows/badge.svg)](https://github.com/chinmaygarde/epoxy/actions?query=workflow%3AWindows)
 
-This is just an experiment. Nothing to see here yet.
+Epoxy is an IDL and Code Generator for Dart FFI Bindings.
+
+![Epoxy Demo](example/demo.gif)
+
+# CLI Reference
+
+```
+Epoxy FFI Bindings Code Generator
+=================================
+
+Usage:
+------
+
+    epoxy  --output <output file path>
+           --idl    <Epoxy IDL file path>
+           [--template-file <Template File Path>]
+           [--template-default-cxx]
+           [--template-default-dart]
+           [--template-default-cxx-dump]
+           [--template-default-dart-dump]
+           [--template-data-dump]
+           [--help]
+           [--version]
+
+Options:
+--------
+
+  --output            The path to the file containing the Code generated for the
+                      given options. Optional if if --template-data-dump is
+                      specified.
+
+  --idl               The path the Epoxy IDL file.
+
+  --template-file     The path to a custom code generation template. To
+                      introspect the data used to render the template, use the
+                      --template-data-dump option. The Inja template rendering
+                      system is used to render the template data.
+
+  --template-data-dump
+                      Instead of rendering the code generation template, dump
+                      the template data. This is useful when writing or
+                      customizing a custom code generation template.
+
+  --help              Dump these help instructions.
+
+  --version           Get the Epoxy version.
+```
 
 # IDL Manual
 
