@@ -74,28 +74,30 @@ target_link_libraries(epoxy
     epoxy_lib
 )
 
-get_filename_component(FIXTURES_DIRECTORY fixtures ABSOLUTE)
+if(EPOXY_BUILD_TESTS)
+  get_filename_component(FIXTURES_DIRECTORY fixtures ABSOLUTE)
 
-set(EPOXY_FIXTURES_LOCATION ${FIXTURES_DIRECTORY})
+  set(EPOXY_FIXTURES_LOCATION ${FIXTURES_DIRECTORY})
 
-configure_file(fixture.h.in fixture.h @ONLY)
+  configure_file(fixture.h.in fixture.h @ONLY)
 
-add_executable(epoxy_unittests
-  driver_unittests.cc
-  sema_unittests.cc
-  code_gen_unittests.cc
-  file_unittests.cc
-)
+  add_executable(epoxy_unittests
+    driver_unittests.cc
+    sema_unittests.cc
+    code_gen_unittests.cc
+    file_unittests.cc
+  )
 
-target_include_directories(epoxy_unittests
-  PRIVATE
-    ${CMAKE_CURRENT_BINARY_DIR})
+  target_include_directories(epoxy_unittests
+    PRIVATE
+      ${CMAKE_CURRENT_BINARY_DIR})
 
-add_test(epoxy_unittests epoxy_unittests)
+  add_test(epoxy_unittests epoxy_unittests)
 
-target_link_libraries(epoxy_unittests
-  PRIVATE
-    epoxy_lib
-    gtest
-    gtest_main
-)
+  target_link_libraries(epoxy_unittests
+    PRIVATE
+      epoxy_lib
+      gtest
+      gtest_main
+  )
+endif(EPOXY_BUILD_TESTS)

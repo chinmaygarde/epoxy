@@ -34,7 +34,15 @@ include(grammar)
 detect_platform()
 
 add_subdirectory(source)
-add_subdirectory(example)
-add_subdirectory(third_party/googletest EXCLUDE_FROM_ALL)
 add_subdirectory(third_party/json EXCLUDE_FROM_ALL)
 add_subdirectory(third_party/inja EXCLUDE_FROM_ALL)
+
+option(EPOXY_BUILD_EXAMPLES "Build Examples." YES)
+if(EPOXY_BUILD_EXAMPLES)
+  add_subdirectory(example)
+endif()
+
+option(EPOXY_BUILD_TESTS "Build Tests." YES)
+if(EPOXY_BUILD_TESTS)
+  add_subdirectory(third_party/googletest EXCLUDE_FROM_ALL)
+endif()
